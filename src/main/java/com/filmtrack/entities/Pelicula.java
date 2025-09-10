@@ -1,0 +1,27 @@
+package com.filmtrack.entities;
+
+import java.util.List;
+
+public class Pelicula extends ContenidoAudiovisual {
+    private int duracionEnMinutos;
+
+    public Pelicula() {
+    }
+
+    public Pelicula(String nombre, String fechaLanzamiento, double puntuacionEnEstrellas, String genero, List<Actor> reparto, int duracionEnMinutos) {
+        super(nombre, fechaLanzamiento, puntuacionEnEstrellas, genero, reparto);
+        this.duracionEnMinutos = duracionEnMinutos;
+    }
+
+    public Pelicula(int duracionEnMinutos) {
+        this.duracionEnMinutos = duracionEnMinutos;
+    }
+
+    public int getDuracionEnMinutos() {
+        return duracionEnMinutos;
+    }
+
+    public void setDuracionEnMinutos(int duracionEnMinutos) {
+        this.duracionEnMinutos = duracionEnMinutos;
+    }
+}
