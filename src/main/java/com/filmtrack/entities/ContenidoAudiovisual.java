@@ -6,12 +6,12 @@ import java.util.List;
 public class ContenidoAudiovisual {
     private String nombre;
     private String fechaLanzamiento;
-    private double puntuacionEnEstrellas;
+    private int puntuacionEnEstrellas;
     private String genero;
     private List<Actor> reparto;
 
     public ContenidoAudiovisual(String nombre, String fechaLanzamiento,
-                                double puntuacionEnEstrellas, String genero,
+                                int puntuacionEnEstrellas, String genero,
                                 List<Actor> reparto) {
         this.nombre = nombre;
         this.fechaLanzamiento = fechaLanzamiento;
@@ -45,7 +45,7 @@ public class ContenidoAudiovisual {
         return puntuacionEnEstrellas;
     }
 
-    public void setPuntuacionEnEstrellas(double puntuacionEnEstrellas) {
+    public void setPuntuacionEnEstrellas(int puntuacionEnEstrellas) {
         this.puntuacionEnEstrellas = puntuacionEnEstrellas;
     }
 
