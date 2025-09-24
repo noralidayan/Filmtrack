@@ -24,6 +24,11 @@ public class Usuario extends Persona {
     public Usuario() {
     }
 
+    public Usuario(String email, String clave) {
+        this.email = email;
+        this.clave = clave;
+    }
+
     public String getNombreUsuario() {
         return nombreUsuario;
     }
@@ -40,6 +45,13 @@ public class Usuario extends Persona {
         this.email = email;
     }
 
+    public String getClave() {
+        return clave;
+    }
+
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
 
     public List<ContenidoAudiovisual> getFavoritos() {
         return favoritos;

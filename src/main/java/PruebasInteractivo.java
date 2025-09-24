@@ -74,7 +74,7 @@ public class PruebasInteractivo {
                     System.out.println("Saliendo del programa.");
                     return;
                 default:
-                    System.out.println("Opción inválida, ingresa una opcion del 1 - 5");
+                    System.out.println("Opción inválida");
             }
         }
     }
