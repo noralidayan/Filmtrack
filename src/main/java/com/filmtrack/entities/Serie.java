@@ -9,7 +9,7 @@ public class Serie extends ContenidoAudiovisual{
     public Serie() {
     }
 
-    public Serie(String nombre, String fechaLanzamiento, double puntuacionEnEstrellas, String genero, List<Actor> reparto, int temporadas, int capitulosPorTemporada) {
+    public Serie(String nombre, String fechaLanzamiento, int puntuacionEnEstrellas, String genero, List<Actor> reparto, int temporadas, int capitulosPorTemporada) {
         super(nombre, fechaLanzamiento, puntuacionEnEstrellas, genero, reparto);
         this.temporadas = temporadas;
         this.capitulosPorTemporada = capitulosPorTemporada;

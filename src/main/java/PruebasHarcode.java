@@ -1,4 +1,4 @@
-import com.filmtrack.entities.ContenidoAudiovisual;
+/*import com.filmtrack.entities.ContenidoAudiovisual;
 import com.filmtrack.entities.Usuario;
 import com.filmtrack.entities.Visualizacion;
 
@@ -24,5 +24,7 @@ public class PruebasHarcode {
         for (Visualizacion v : usu1.getHistorialVistos()) {
             System.out.println("Historial de visualizacion: " + v);
         }
+
     }
 }
+*/

@@ -1,0 +1,47 @@
+Especificación de Requisitos – Registro de Usuario
+Actores: Usuario - Sistema
+Objetivo: Permitir que cada usuario pueda registrarse e iniciar sesión para gestionar sus visualizaciones.
+Precondiciones: El usuario no debe estar registrado previamente (para el caso de Registro).
+Requerimientos Funcionales:
+-El sistema debe permitir al usuario ingresar sus credenciales (email y clave).
+-El sistema debe validar el formato del email ingresado (ejemplo: contener “@” y reglas mínimas).
+-El sistema debe aplicar un mecanismo de encriptación para la clave antes de almacenarla o validarla.
+-El sistema debe validar si el usuario existe en la base de datos:
+    Si existe: redirigirlo al login.
+    Si no existe: redirigirlo al registro.
+-El sistema debe permitir añadir un nuevo usuario en la base de datos.
+-El sistema debe permitir el inicio de sesión de un usuario registrado.
+-El sistema debe ejecutar procesos de autenticación para validar las credenciales.
+-Si alguna credencial es incorrecta, el sistema debe:
+-Mostrar una alerta en pantalla notificando datos incorrectos.
+-Permitir al usuario reingresar sus datos.
+-Si los datos siguen siendo incorrectos, ofrecer la opción de restablecer la clave.
+Requerimientos No Funcionales:
+Seguridad:
+-La clave debe almacenarse en la base de datos en forma encriptada (hash + salt)
+-Debe usarse un protocolo seguro para el intercambio de datos (ejemplo: HTTPS).
+Rendimiento:
+-El tiempo de respuesta del sistema para validaciones y login no debe superar los 3 segundos.
+Usabilidad:
+-Los mensajes de error deben ser claros y guiar al usuario en los pasos a seguir.
+-La interfaz debe permitir un uso intuitivo tanto en desktop como en mobile.
+Disponibilidad:
+-El sistema debe estar disponible al menos el 99% del tiempo para operaciones de registro e inicio de sesión.
+Mantenibilidad:
+-El código debe estar documentado y seguir convenciones estándar para facilitar futuras modificaciones.
+Casos Alternativos:
+Usuario ya registrado intenta registrarse nuevamente:
+-El sistema detecta que el email ya existe en la base de datos.
+-Muestra un mensaje indicando: “El usuario ya está registrado, inicie sesión”.
+-Redirige al formulario de login.
+Usuario olvida la clave desde el inicio (sin intentos previos fallidos):
+-En el login, el usuario selecciona la opción “¿Olvidaste tu clave?”.
+-El sistema solicita el email registrado.
+-Envía un link seguro para restablecer la contraseña.
+Usuario ingresa email con formato incorrecto:
+-El sistema muestra un mensaje: “Formato de email inválido. Ejemplo: usuario@dominio.com
+”.
+-No permite continuar hasta corregirlo.
+Usuario ya autenticado intenta volver a registrarse o loguearse:
+-El sistema detecta que ya existe una sesión activa.
+-Redirige automáticamente al inicio o panel de usuario.

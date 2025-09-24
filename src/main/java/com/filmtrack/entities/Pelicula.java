@@ -8,7 +8,7 @@ public class Pelicula extends ContenidoAudiovisual {
     public Pelicula() {
     }
 
-    public Pelicula(String nombre, String fechaLanzamiento, double puntuacionEnEstrellas, String genero, List<Actor> reparto, int duracionEnMinutos) {
+    public Pelicula(String nombre, String fechaLanzamiento, int puntuacionEnEstrellas, String genero, List<Actor> reparto, int duracionEnMinutos) {
         super(nombre, fechaLanzamiento, puntuacionEnEstrellas, genero, reparto);
         this.duracionEnMinutos = duracionEnMinutos;
     }
