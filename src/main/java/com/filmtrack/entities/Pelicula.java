@@ -24,4 +24,11 @@ public class Pelicula extends ContenidoAudiovisual {
     public void setDuracionEnMinutos(int duracionEnMinutos) {
         this.duracionEnMinutos = duracionEnMinutos;
     }
+
+    @Override
+    public String toString() {
+        return "Pelicula{" +
+                "duracionEnMinutos=" + duracionEnMinutos +
+                '}';
+    }
 }

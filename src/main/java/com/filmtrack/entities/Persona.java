@@ -1,6 +1,6 @@
 package com.filmtrack.entities;
 
-abstract class Persona {
+public class Persona {
     private String nombre;
     private String apellido;
     private String fechaNacimiento;
@@ -37,4 +37,6 @@ abstract class Persona {
     public void setFechaNacimiento(String fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
+
+
 }

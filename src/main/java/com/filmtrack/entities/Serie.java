@@ -35,4 +35,12 @@ public class Serie extends ContenidoAudiovisual{
     public void setCapitulosPorTemporada(int capitulosPorTemporada) {
         this.capitulosPorTemporada = capitulosPorTemporada;
     }
+
+    @Override
+    public String toString() {
+        return "Serie{" +
+                "temporadas=" + temporadas +
+                ", capitulosPorTemporada=" + capitulosPorTemporada +
+                '}';
+    }
 }

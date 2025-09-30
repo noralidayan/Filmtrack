@@ -70,4 +70,15 @@ public class ContenidoAudiovisual {
     public void mostrarInfo() {
 
     }
+
+    @Override
+    public String toString() {
+        return "ContenidoAudiovisual{" +
+                "nombre='" + nombre + '\'' +
+                ", fechaLanzamiento='" + fechaLanzamiento + '\'' +
+                ", puntuacionEnEstrellas=" + puntuacionEnEstrellas +
+                ", genero='" + genero + '\'' +
+                ", reparto=" + reparto +
+                '}';
+    }
 }

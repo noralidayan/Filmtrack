@@ -11,7 +11,7 @@ public class PruebasInteractivo {
     private static Scanner teclado = new Scanner(System.in);
 
     public static void main(String[] args) {
-        System.out.println("Ingresa tu nombre de usuario");
+        System.out.println("Ingresa tu nombre de usuario\n");
         String nombreUsuario = teclado.nextLine();
         usu1 = new Usuario();
         usu1.setNombreUsuario(nombreUsuario);

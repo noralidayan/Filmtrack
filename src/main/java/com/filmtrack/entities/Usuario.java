@@ -127,4 +127,14 @@ public class Usuario extends Persona {
         System.out.println("No podés puntuar " + contenido.getNombre() + " porque no está en tu historial.");
     }
 
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "nombreUsuario='" + nombreUsuario + '\'' +
+                ", email='" + email + '\'' +
+                ", clave='" + clave + '\'' +
+                ", favoritos=" + favoritos +
+                ", historialVistos=" + historialVistos +
+                '}';
+    }
 }

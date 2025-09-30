@@ -31,4 +31,6 @@ public class Actor extends Persona{
     public void setFilmografia(List<ContenidoAudiovisual> filmografia) {
         this.filmografia = filmografia;
     }
+
+
 }
