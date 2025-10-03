@@ -1,7 +1,10 @@
-package com.filmtrack.entities;
+package com.filmtrack.logica.models;
+
+import com.filmtrack.entities.ContenidoAudiovisual;
+import jakarta.persistence.Entity;
 
 import java.util.List;
-
+@Entity
 public class Pelicula extends ContenidoAudiovisual {
     private int duracionEnMinutos;
 

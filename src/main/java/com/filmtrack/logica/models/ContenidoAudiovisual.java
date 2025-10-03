@@ -1,8 +1,9 @@
-package com.filmtrack.entities;
+package com.filmtrack.logica.models;
 
-import java.util.ArrayList;
+import jakarta.persistence.Entity;
+
 import java.util.List;
-
+@Entity
 public class ContenidoAudiovisual {
     private String nombre;
     private String fechaLanzamiento;

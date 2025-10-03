@@ -1,8 +1,11 @@
-package com.filmtrack.entities;
+package com.filmtrack.logica.models;
+
+import com.filmtrack.entities.ContenidoAudiovisual;
+import jakarta.persistence.Entity;
 
 import java.util.List;
-
-public class Serie extends ContenidoAudiovisual{
+@Entity
+public class Serie extends ContenidoAudiovisual {
     private int temporadas;
     private int capitulosPorTemporada;
 

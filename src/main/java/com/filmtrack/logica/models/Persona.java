@@ -1,14 +1,22 @@
-package com.filmtrack.entities;
+package com.filmtrack.logica.models;
 
+import jakarta.persistence.*;
+
+import java.time.LocalDate;
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Persona {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String nombre;
     private String apellido;
-    private String fechaNacimiento;
-
+    private LocalDate fechaNacimiento;
     public Persona() {
     }
 
-    public Persona(String nombre, String apellido, String fechaNacimiento) {
+    public Persona(String nombre, String apellido, LocalDate fechaNacimiento) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.fechaNacimiento = fechaNacimiento;
@@ -30,11 +38,11 @@ public class Persona {
         this.apellido = apellido;
     }
 
-    public String getFechaNacimiento() {
+    public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(String fechaNacimiento) {
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 

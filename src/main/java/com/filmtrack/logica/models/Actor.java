@@ -1,8 +1,13 @@
-package com.filmtrack.entities;
+package com.filmtrack.logica.models;
 
+import com.filmtrack.entities.ContenidoAudiovisual;
+import jakarta.persistence.Entity;
+
+import java.time.LocalDate;
 import java.util.List;
 
-public class Actor extends Persona{
+@Entity
+public class Actor extends Persona {
     public String nombreArtistico;
     public List<ContenidoAudiovisual> filmografia;
 
@@ -10,7 +15,7 @@ public class Actor extends Persona{
     }
 
 
-    public Actor(String nombre, String apellido, String fechaNacimiento, String nombreArtistico, List<ContenidoAudiovisual> filmografia) {
+    public Actor(String nombre, String apellido, LocalDate fechaNacimiento, String nombreArtistico, List<ContenidoAudiovisual> filmografia) {
         super(nombre, apellido, fechaNacimiento);
         this.nombreArtistico = nombreArtistico;
         this.filmografia = filmografia;

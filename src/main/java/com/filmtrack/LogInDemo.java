@@ -1,5 +1,6 @@
-package com.filmtrack.entities;
+package com.filmtrack;
 
+import com.filmtrack.logica.models.Usuario;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;

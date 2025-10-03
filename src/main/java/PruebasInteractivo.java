@@ -1,9 +1,9 @@
-import com.filmtrack.entities.ContenidoAudiovisual;
-import com.filmtrack.entities.Usuario;
-import com.filmtrack.entities.Visualizacion;
-import com.sun.source.tree.WhileLoopTree;
+import com.filmtrack.logica.models.ContenidoAudiovisual;
+import com.filmtrack.logica.models.Usuario;
+import com.filmtrack.logica.models.Visualizacion;
 
-import java.sql.SQLOutput;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class PruebasInteractivo {
@@ -53,8 +53,10 @@ public class PruebasInteractivo {
                     String tituloHist = teclado.nextLine();
                     ContenidoAudiovisual visto = new ContenidoAudiovisual();
                     visto.setNombre(tituloHist);
-                    System.out.println("Ingresa la fecha de visualización");
-                    String fecha = teclado.nextLine();
+                    System.out.println("Ingresa la fecha de visualización dd/MM/yyyy");
+                    String fechaStr = teclado.nextLine();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    LocalDate fecha = LocalDate.parse(fechaStr, formatter);
                     Visualizacion vistoNuevo = new Visualizacion(visto, fecha);
                     vistoNuevo.setFechaVisto(fecha);
                     usu1.agregarAlHistorial(vistoNuevo);

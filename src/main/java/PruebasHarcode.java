@@ -1,6 +1,6 @@
-/*import com.filmtrack.entities.ContenidoAudiovisual;
-import com.filmtrack.entities.Usuario;
-import com.filmtrack.entities.Visualizacion;
+/*import com.filmtrack.entities.logica.ContenidoAudiovisual;
+import com.filmtrack.entities.logica.Usuario;
+import com.filmtrack.entities.logica.Visualizacion;
 
 public class PruebasHarcode {
     public static void main(String[] args) {

@@ -1,12 +1,17 @@
-package com.filmtrack.entities;
+package com.filmtrack.logica.models;
 
+import java.time.LocalDate;
+
+import jakarta.persistence.Entity;
+
+@Entity
 public class Visualizacion {
     private ContenidoAudiovisual contenido;
-    private String fechaVisto;
+    private LocalDate fechaVisto;
     private int puntuacion; // puntuación individual del usuario
 
     // Constructor con contenido y fecha
-    public Visualizacion(ContenidoAudiovisual contenido, String fechaVisto) {
+    public Visualizacion(ContenidoAudiovisual contenido, LocalDate fechaVisto) {
         this.contenido = contenido;
         this.fechaVisto = fechaVisto;
         this.puntuacion = 0; // por defecto sin puntuar
@@ -20,11 +25,11 @@ public class Visualizacion {
         this.contenido = contenido;
     }
 
-    public String getFechaVisto() {
+    public LocalDate getFechaVisto() {
         return fechaVisto;
     }
 
-    public void setFechaVisto(String fechaVisto) {
+    public void setFechaVisto(LocalDate fechaVisto) {
         this.fechaVisto = fechaVisto;
     }
 
