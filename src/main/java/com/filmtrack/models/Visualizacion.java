@@ -1,22 +1,40 @@
-package com.filmtrack.logica.models;
+package com.filmtrack.models;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
-
-import jakarta.persistence.Entity;
 
 @Entity
 public class Visualizacion {
-    private ContenidoAudiovisual contenido;
-    private LocalDate fechaVisto;
-    private int puntuacion; // puntuación individual del usuario
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    // Constructor con contenido y fecha
+    private String version;
+
+    private boolean activo;
+
+    @ManyToOne
+    @JoinColumn(name = "contenido_id")
+    private ContenidoAudiovisual contenido;
+
+    private LocalDate fechaVisto;
+
+    private int puntuacion;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
+    public Visualizacion() {
+    }
+
     public Visualizacion(ContenidoAudiovisual contenido, LocalDate fechaVisto) {
         this.contenido = contenido;
         this.fechaVisto = fechaVisto;
-        this.puntuacion = 0; // por defecto sin puntuar
+        this.puntuacion = 0;
     }
 
+    // Getters y setters
     public ContenidoAudiovisual getContenido() {
         return contenido;
     }
@@ -45,9 +63,25 @@ public class Visualizacion {
         }
     }
 
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
     @Override
     public String toString() {
         return contenido.getNombre() + " (visto: " + fechaVisto +
                 ", puntuación: " + (puntuacion == 0 ? "sin puntuar" : puntuacion + "⭐") + ")";
+    }
+
+    public void setUsuario(Usuario usu) {
+        this.usuario = usu;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
     }
 }

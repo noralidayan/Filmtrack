@@ -1,15 +1,17 @@
-package com.filmtrack.logica.models;
+package com.filmtrack.models;
 
-import com.filmtrack.entities.ContenidoAudiovisual;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Actor extends Persona {
     public String nombreArtistico;
-    public List<ContenidoAudiovisual> filmografia;
+    @ManyToMany(mappedBy = "reparto")
+    private List<ContenidoAudiovisual> filmografia = new ArrayList<>();
 
     public Actor() {
     }

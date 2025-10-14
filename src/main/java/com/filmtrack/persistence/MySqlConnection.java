@@ -1,3 +1,5 @@
+package com.filmtrack.persistence;
+
 import java.sql.*;
 
 public class MySqlConnection {

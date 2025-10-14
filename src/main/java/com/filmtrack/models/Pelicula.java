@@ -1,11 +1,16 @@
-package com.filmtrack.logica.models;
+package com.filmtrack.models;
 
-import com.filmtrack.entities.ContenidoAudiovisual;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import java.util.List;
 @Entity
 public class Pelicula extends ContenidoAudiovisual {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private int duracionEnMinutos;
 
     public Pelicula() {
