@@ -10,7 +10,6 @@ public class Visualizacion {
     private int id;
 
     private String version;
-
     private boolean activo;
 
     @ManyToOne
@@ -18,7 +17,6 @@ public class Visualizacion {
     private ContenidoAudiovisual contenido;
 
     private LocalDate fechaVisto;
-
     private int puntuacion;
 
     @ManyToOne
@@ -28,13 +26,14 @@ public class Visualizacion {
     public Visualizacion() {
     }
 
-    public Visualizacion(ContenidoAudiovisual contenido, LocalDate fechaVisto) {
+    public Visualizacion(Usuario usuario, ContenidoAudiovisual contenido, LocalDate fechaVisto) {
+        this.usuario = usuario;
         this.contenido = contenido;
         this.fechaVisto = fechaVisto;
         this.puntuacion = 0;
+        this.activo = true;
     }
 
-    // Getters y setters
     public ContenidoAudiovisual getContenido() {
         return contenido;
     }
@@ -73,8 +72,7 @@ public class Visualizacion {
 
     @Override
     public String toString() {
-        return contenido.getNombre() + " (visto: " + fechaVisto +
-                ", puntuación: " + (puntuacion == 0 ? "sin puntuar" : puntuacion + "⭐") + ")";
+        return contenido.getNombre() + " (visto: " + fechaVisto + (puntuacion == 0 ? "sin puntuar" : puntuacion + "⭐") + ")";
     }
 
     public void setUsuario(Usuario usu) {

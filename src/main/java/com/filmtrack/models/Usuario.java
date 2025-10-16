@@ -18,8 +18,9 @@ public class Usuario extends Persona {
     )
     private List<ContenidoAudiovisual> favoritos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "usuario", orphanRemoval = true)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Visualizacion> historialVistos = new ArrayList<>();
+
 
     public Usuario() {
         super();
@@ -33,7 +34,6 @@ public class Usuario extends Persona {
         this.clave = clave;
     }
 
-    // Getters y setters
     public String getNombreUsuario() { return nombreUsuario; }
     public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
 

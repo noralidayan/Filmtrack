@@ -3,6 +3,7 @@ package com.filmtrack.persistence;
 import com.filmtrack.models.ContenidoAudiovisual;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
 import java.util.List;
@@ -27,17 +28,19 @@ public class ContenidoAudiovisualDAO {
     }
 
     public ContenidoAudiovisual guardar(ContenidoAudiovisual contenido) {
-        try {
-            em.getTransaction().begin();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+
+        if (contenido.getId() == 0) {
             em.persist(contenido);
-            em.getTransaction().commit();
-            return contenido;
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-            return null;
+        } else {
+            contenido = em.merge(contenido);
         }
+
+        tx.commit();
+        return contenido;
     }
+
 
 
     public ContenidoAudiovisual buscarPorId(int id) {

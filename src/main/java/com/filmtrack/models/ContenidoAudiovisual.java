@@ -1,5 +1,7 @@
 package com.filmtrack.models;
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,6 @@ public class ContenidoAudiovisual extends Visualizacion {
     public ContenidoAudiovisual(String nombre, String fechaLanzamiento, int puntuacionEnEstrellas, String genero, List<Actor> reparto) {
     }
 
-    // Getters y setters
     public int getId() { return id; }
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -51,5 +52,8 @@ public class ContenidoAudiovisual extends Visualizacion {
     public String toString() {
         return nombre +
                 (puntuacionEnEstrellas == 0 ? "sin puntuar" : puntuacionEnEstrellas) + ")";
+    }
+
+    public void setFechaLanzamiento(LocalDate of) {
     }
 }

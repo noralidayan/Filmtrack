@@ -10,18 +10,22 @@ import com.filmtrack.persistence.VisualizacionDAO;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class PruebasInteractivo {
+
     private static UsuarioDAO usuarioDAO = new UsuarioDAO();
     private static VisualizacionDAO visualizacionDAO = new VisualizacionDAO();
     private static ContenidoAudiovisualDAO contenidoDAO = new ContenidoAudiovisualDAO();
-    private static UsuarioController usuarioController = new UsuarioController(usuarioDAO, visualizacionDAO, contenidoDAO);
+    private static UsuarioController usuarioController = new UsuarioController(
+            new com.filmtrack.Services.UsuarioService(usuarioDAO, visualizacionDAO, contenidoDAO)
+    );
     private static Usuario usuLogueado;
     private static Scanner teclado = new Scanner(System.in);
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public static void main(String[] args) {
-
         while (true) {
             System.out.println("\n--- Menú Principal ---");
             System.out.println("1- Crear usuario");
@@ -39,46 +43,31 @@ public class PruebasInteractivo {
         }
     }
 
-
     private static void crearUsuario() {
         try {
             System.out.print("Nombre: ");
             String nombre = teclado.nextLine();
-
             System.out.print("Email: ");
             String email = teclado.nextLine();
-
             System.out.print("Nombre de usuario: ");
             String nombreUsuario = teclado.nextLine();
-
             System.out.print("Clave: ");
             String clave = teclado.nextLine();
-
             System.out.print("Fecha de nacimiento (dd/MM/yyyy): ");
-            String fechaStr = teclado.nextLine();
-            LocalDate fecha = LocalDate.parse(fechaStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            LocalDate fecha = LocalDate.parse(teclado.nextLine(), formatter);
 
-            // Llamamos al controller, que hace todo el resto
-            Usuario nuevo = usuarioController.crearUsuario(nombre, email, nombreUsuario, clave, fecha);
-            if (nuevo != null) usuLogueado = nuevo; // loguea automáticamente
+            usuLogueado = usuarioController.registrarUsuario(nombre, email, nombreUsuario, clave, fecha);
         } catch (Exception e) {
             System.out.println("Error al crear usuario. Revisa los datos ingresados.");
-            e.printStackTrace();
         }
     }
-
 
     private static void loginUsuario() {
         System.out.print("Email: ");
         String email = teclado.nextLine();
-
         System.out.print("Clave: ");
         String clave = teclado.nextLine();
-
-        usuLogueado = usuarioController.iniciarSesion(email, clave);
-        if (usuLogueado != null) {
-            System.out.println("¡Bienvenida, " + usuLogueado.getNombreUsuario() + "!");
-        }
+        usuLogueado = usuarioController.login(email, clave);
     }
 
     private static void menuUsuario() {
@@ -88,7 +77,8 @@ public class PruebasInteractivo {
             System.out.println("2- Agregar al historial");
             System.out.println("3- Ver favoritos");
             System.out.println("4- Ver historial");
-            System.out.println("5- Cerrar sesión");
+            System.out.println("5- Puntuar contenido");
+            System.out.println("6- Cerrar sesión");
             System.out.print("Opción: ");
             String opcion = teclado.nextLine();
 
@@ -96,33 +86,44 @@ public class PruebasInteractivo {
                 case "1":
                     System.out.print("Nombre del contenido a agregar a favoritos: ");
                     String nombreFav = teclado.nextLine();
-                    ContenidoAudiovisual contenidoFav = new ContenidoAudiovisual(nombreFav);
-                    usuarioController.agregarFavorito(usuLogueado, contenidoFav);
+                    usuarioController.agregarFavoritos(usuLogueado, nombreFav);
                     break;
 
                 case "2":
                     System.out.print("Nombre del contenido visto: ");
                     String nombreHist = teclado.nextLine();
-                    ContenidoAudiovisual contenidoHist = new ContenidoAudiovisual(nombreHist);
+                    ContenidoAudiovisual contenidoHist = contenidoDAO.buscarPorNombre(nombreHist);
+                    if (contenidoHist == null) contenidoHist = new ContenidoAudiovisual(nombreHist);
 
                     System.out.print("Fecha de visualización (dd/MM/yyyy, ENTER para hoy): ");
                     String fechaInput = teclado.nextLine();
-                    LocalDate fecha = fechaInput.isEmpty() ?
-                            LocalDate.now() :
-                            LocalDate.parse(fechaInput, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    LocalDate fecha = fechaInput.isEmpty() ? LocalDate.now() : LocalDate.parse(fechaInput, formatter);
 
                     usuarioController.agregarAlHistorial(usuLogueado, contenidoHist);
                     break;
 
                 case "3":
-                    usuarioController.obtenerFavoritos(usuLogueado);
+                    usuarioController.mostrarFavoritos(usuLogueado);
                     break;
 
                 case "4":
-                    usuarioController.obtenerHistorial(usuLogueado);
+                    usuarioController.mostrarHistorial(usuLogueado);
                     break;
 
                 case "5":
+                    System.out.print("Nombre del contenido a puntuar: ");
+                    String nombrePunt = teclado.nextLine();
+                    ContenidoAudiovisual contenidoPunt = contenidoDAO.buscarPorNombre(nombrePunt);
+                    if (contenidoPunt == null) {
+                        System.out.println("El contenido no existe.");
+                        break;
+                    }
+                    System.out.print("Puntaje (1-5): ");
+                    int valor = Integer.parseInt(teclado.nextLine());
+                    usuarioController.puntuarContenido(usuLogueado, contenidoPunt, valor);
+                    break;
+
+                case "6":
                     usuLogueado = null;
                     System.out.println("Sesión cerrada");
                     return;

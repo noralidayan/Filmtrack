@@ -34,6 +34,23 @@ public class VisualizacionDAO {
         }
     }
 
+    public Visualizacion buscarPorUsuarioYContenido(int usuarioId, int contenidoId) {
+        try {
+            return em.createQuery(
+                            "SELECT v FROM Visualizacion v WHERE v.usuario.id = :usuarioId AND v.contenido.id = :contenidoId",
+                            Visualizacion.class)
+                    .setParameter("usuarioId", usuarioId)
+                    .setParameter("contenidoId", contenidoId)
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     public void cerrar() {
         em.close();
         emf.close();

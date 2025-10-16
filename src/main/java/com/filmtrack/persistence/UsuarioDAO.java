@@ -12,14 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioDAO {
+    //Atributos para interactuar con la base de datos
     private EntityManagerFactory emf;
     private EntityManager em;
-
+    //Constructor: inicializo conexion con DB y EntityManager
     public UsuarioDAO() {
         emf = Persistence.createEntityManagerFactory("FilmtrackPU");
         em = emf.createEntityManager();
     }
-
+//Aplicando CRUD
+    // Metodo guardar: alta o modificación de un usuario
     public void guardar(Usuario usuario) {
         try {
             em.getTransaction().begin();
@@ -30,32 +32,19 @@ public class UsuarioDAO {
             e.printStackTrace();
         }
     }
-
+    // Metodo Eliminar: "borrado" lógico, activo = false
     public void eliminar(Usuario usuario) {
         try {
             em.getTransaction().begin();
             Usuario u = em.find(Usuario.class, usuario.getId());
-            if (u != null) em.remove(u);
+            if (u != null) u.setActivo(false);
             em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();
             e.printStackTrace();
         }
     }
-
-    public void actualizar(Usuario usuario) {
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            em.merge(usuario); // merge actualiza el objeto en la DB
-            tx.commit();
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            e.printStackTrace();
-        }
-    }
-
-
+    //Metodo Buscar un usuario por email. Devuelve null si no existe.
     public Usuario buscarPorEmail(String email) {
         try {
             return em.createQuery(
@@ -70,7 +59,7 @@ public class UsuarioDAO {
     public Usuario buscarPorId(int id) {
         return em.find(Usuario.class, id);
     }
-
+    // Historial de visualizaciones de un usuario
     public List<Visualizacion> obtenerHistorialCompleto(int usuarioId) {
         try {
             return em.createQuery(
