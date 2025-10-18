@@ -11,7 +11,6 @@ public class Visualizacion {
 
     private String version;
     private boolean activo;
-
     @ManyToOne
     @JoinColumn(name = "contenido_id")
     private ContenidoAudiovisual contenido;

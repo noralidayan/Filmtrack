@@ -65,30 +65,35 @@ public class UsuarioService {
     public boolean agregarFavorito(Usuario usu, String nombreContenido) {
         if (!validarUsuario(usu)) return false;
 
+        // Buscar contenido por nombre
         ContenidoAudiovisual contenido = contenidoDAO.buscarPorNombre(nombreContenido);
 
+        // Si no existe, crear uno nuevo y guardarlo
         if (contenido == null) {
-            // Crear un nuevo contenido solo con el nombre (y datos opcionales que no dependan de visualizaciones)
             contenido = new ContenidoAudiovisual();
             contenido.setNombre(nombreContenido);
-            // Podés agregar género, fecha, etc. si tenés defaults
-            contenidoDAO.guardar(contenido);
+            contenido = contenidoDAO.guardar(contenido);
         }
 
+        // Inicializar la lista de favoritos si es null
         if (usu.getFavoritos() == null) {
             usu.setFavoritos(new ArrayList<>());
         }
 
+        // Verificar si el contenido ya está en favoritos (por ID)
         ContenidoAudiovisual finalContenido = contenido;
         boolean existe = usu.getFavoritos().stream()
                 .anyMatch(c -> c.getId() == finalContenido.getId());
 
         if (existe) return false;
 
+        // Agregar el contenido y guardar el usuario
         usu.getFavoritos().add(contenido);
         usuarioDAO.guardar(usu);
+
         return true;
     }
+
 
 
 

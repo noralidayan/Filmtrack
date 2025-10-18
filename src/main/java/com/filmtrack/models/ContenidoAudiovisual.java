@@ -6,14 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class ContenidoAudiovisual extends Visualizacion {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ContenidoAudiovisual {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String nombre;
-    private int fechaLanzamiento;
-    private String genero;
+    private String genero = "Desconocido";
+    private LocalDate fechaLanzamiento = LocalDate.of(1900, 1, 1);
+    private boolean activo = true;
     @ManyToMany
     @JoinTable(
             name = "contenido_reparto",
@@ -50,9 +49,9 @@ public class ContenidoAudiovisual extends Visualizacion {
 
     @Override
     public String toString() {
-        return nombre +
-                (puntuacionEnEstrellas == 0 ? "sin puntuar" : puntuacionEnEstrellas) + ")";
+        return nombre + " (" + (puntuacionEnEstrellas == 0 ? "sin puntuar" : puntuacionEnEstrellas + "⭐") + ")";
     }
+
 
     public void setFechaLanzamiento(LocalDate of) {
     }
