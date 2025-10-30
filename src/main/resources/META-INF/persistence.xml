@@ -9,9 +9,9 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <!-- Clases de tu proyecto -->
-        <class>com.filmtrack.models.Usuario</class>
-        <class>com.filmtrack.models.ContenidoAudiovisual</class>
-        <class>com.filmtrack.models.Visualizacion</class>
+        <class>com.filmtrack.model.Usuario</class>
+        <class>com.filmtrack.model.ContenidoAudiovisual</class>
+        <class>com.filmtrack.model.Visualizacion</class>
 
         <properties>
             <!-- Conexión a MySQL -->

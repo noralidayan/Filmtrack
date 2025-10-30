@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FilmTrack - Bienvenida</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #4b0082);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #ff69b4;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px #000;
+        }
+
+        button, input[type="submit"] {
+            background: #ff69b4;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover, input[type="submit"]:hover {
+            background: #ff1493;
+        }
+
+        .registro-container {
+            background: #2b2b2b;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 192, 203, 0.5);
+            width: 350px;
+            display: none; /* inicialmente oculto */
+        }
+
+        .registro-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ff69b4;
+        }
+
+        .registro-container label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        .registro-container input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .registro-container small {
+            display: block;
+            color: #ffb6c1;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>¡Bienvenid@ a FilmTrack!</h1>
+    <button id="comenzarBtn">Comenzar</button>
+
+    <div class="registro-container" id="registroContainer">
+        <h2>Registro</h2>
+        <form id="registroForm">
+            <label for="nombre">Nombre y Apellido</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Ej: Norali Pérez" required>
+
+            <label for="usuario">Nombre de Usuario</label>
+            <input type="text" id="usuario" name="usuario" placeholder="Ej: norali123" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="ejemplo@email.com" required>
+            <small id="emailError"></small>
+
+            <label for="clave">Contraseña</label>
+            <input type="password" id="clave" name="clave" placeholder="Mínimo 4 caracteres" required>
+            <small id="claveError"></small>
+
+            <label for="fechaNacimiento">Fecha de Nacimiento</label>
+            <input type="text" id="fechaNacimiento" name="fechaNacimiento" placeholder="dd-mm-aaaa" pattern="\d{2}-\d{2}-\d{4}" required>
+            <small id="fechaError">Formato: dd-mm-aaaa</small>
+
+            <input type="submit" value="Registrarse">
+        </form>
+    </div>
+
+    <script>
+        const comenzarBtn = document.getElementById('comenzarBtn');
+        const registroContainer = document.getElementById('registroContainer');
+
+        comenzarBtn.addEventListener('click', () => {
+            registroContainer.style.display = 'block';
+            comenzarBtn.style.display = 'none';
+        });
+
+        const form = document.getElementById('registroForm');
+        const emailError = document.getElementById('emailError');
+        const claveError = document.getElementById('claveError');
+        const fechaError = document.getElementById('fechaError');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            let valid = true;
+
+            // Validar email
+            const email = form.email.value.trim();
+            const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
+            if (!emailRegex.test(email)) {
+                emailError.textContent = "Email inválido";
+                valid = false;
+            } else {
+                emailError.textContent = "";
+            }
+
+            // Validar contraseña
+            const clave = form.clave.value.trim();
+            if (clave.length < 4) {
+                claveError.textContent = "La contraseña debe tener al menos 4 caracteres";
+                valid = false;
+            } else {
+                claveError.textContent = "";
+            }
+
+            // Validar fecha
+            const fecha = form.fechaNacimiento.value.trim();
+            const fechaRegex = /^\d{2}-\d{2}-\d{4}$/;
+            if (!fechaRegex.test(fecha)) {
+                fechaError.textContent = "Formato inválido: dd-mm-aaaa";
+                valid = false;
+            } else {
+                fechaError.textContent = "Formato: dd-mm-aaaa";
+            }
+
+            // Validar que no haya campos vacíos
+            ['nombre','usuario','email','clave','fechaNacimiento'].forEach(id => {
+                if (!form[id].value.trim()) valid = false;
+            });
+
+            if (valid) {
+                alert("Formulario válido, listo para enviar a tu proyecto Java!");
+            }
+        });
+    </script>
+</body>
+</html>

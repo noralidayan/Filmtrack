@@ -1,4 +1,5 @@
-package com.filmtrack.models;
+package com.filmtrack.model;
+
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -6,6 +7,7 @@ import java.util.List;
 
 @Entity
 public class Usuario extends Persona {
+
     private String nombreUsuario;
     private String email;
     private String clave;
@@ -18,9 +20,8 @@ public class Usuario extends Persona {
     )
     private List<ContenidoAudiovisual> favoritos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Visualizacion> historialVistos = new ArrayList<>();
-
 
     public Usuario() {
         super();
@@ -32,22 +33,49 @@ public class Usuario extends Persona {
         this.nombreUsuario = nombreUsuario;
         this.email = email;
         this.clave = clave;
+        this.favoritos = new ArrayList<>();
+        this.historialVistos = new ArrayList<>();
     }
 
-    public String getNombreUsuario() { return nombreUsuario; }
-    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
+    public String getNombreUsuario() {
+        return nombreUsuario;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
 
-    public String getClave() { return clave; }
-    public void setClave(String clave) { this.clave = clave; }
+    public String getEmail() {
+        return email;
+    }
 
-    public List<ContenidoAudiovisual> getFavoritos() { return favoritos; }
-    public void setFavoritos(List<ContenidoAudiovisual> favoritos) { this.favoritos = favoritos; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public List<Visualizacion> getHistorialVistos() { return historialVistos; }
-    public void setHistorialVistos(List<Visualizacion> historialVistos) { this.historialVistos = historialVistos; }
+    public String getClave() {
+        return clave;
+    }
+
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
+
+    public List<ContenidoAudiovisual> getFavoritos() {
+        return favoritos;
+    }
+
+    public void setFavoritos(List<ContenidoAudiovisual> favoritos) {
+        this.favoritos = favoritos;
+    }
+
+    public List<Visualizacion> getHistorialVistos() {
+        return historialVistos;
+    }
+
+    public void setHistorialVistos(List<Visualizacion> historialVistos) {
+        this.historialVistos = historialVistos;
+    }
 
     @Override
     public String toString() {

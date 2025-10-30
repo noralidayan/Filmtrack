@@ -1,4 +1,4 @@
-package com.filmtrack.Services;
+package com.filmtrack.service;
 
 public class ContenidoAudiovisualService {
 }

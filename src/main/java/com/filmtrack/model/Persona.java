@@ -1,4 +1,4 @@
-package com.filmtrack.models;
+package com.filmtrack.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -30,7 +30,6 @@ public class Persona {
     }
 
     public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
 
     public int getVersion() { return version; }
     public void setVersion(int version) { this.version = version; }
