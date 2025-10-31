@@ -75,7 +75,6 @@ public class UsuarioService {
             contenido = contenidoDAO.guardar(contenido);
         }
 
-        // Inicializar la lista de favoritos si es null
         if (usu.getFavoritos() == null) {
             usu.setFavoritos(new ArrayList<>());
         }

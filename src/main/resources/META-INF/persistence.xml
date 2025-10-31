@@ -8,24 +8,23 @@
     <persistence-unit name="FilmtrackPU" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <!-- Clases de tu proyecto -->
         <class>com.filmtrack.models.Usuario</class>
         <class>com.filmtrack.models.ContenidoAudiovisual</class>
+        <class>com.filmtrack.models.Pelicula</class>
+        <class>com.filmtrack.models.Serie</class>
         <class>com.filmtrack.models.Visualizacion</class>
 
         <properties>
-            <!-- Conexión a MySQL -->
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/filmtrack?useSSL=false&amp;serverTimezone=UTC"/>
             <property name="jakarta.persistence.jdbc.user" value="root"/>
             <property name="jakarta.persistence.jdbc.password" value=""/>
-            <property name="hibernate.show_sql" value="false"/>
-            <property name="hibernate.format_sql" value="false"/>
-            <property name="hibernate.use_sql_comments" value="false"/>
+
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.use_sql_comments" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>
