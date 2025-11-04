@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FilmTrack</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Colores modernos: negros, violetas y rosas */
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #1a1a1a, #4b0082);
+      color: #fff;
+    }
+    header.navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      background: #2b2b2b;
+    }
+    header .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ff69b4;
+    }
+    nav a {
+      text-decoration: none;
+      color: #fff;
+      padding: 8px 15px;
+      border: 1px solid #ff69b4;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    nav a:hover {
+      background: #ff69b4;
+      color: #fff;
+    }
+    main.hero {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 70px);
+      text-align: center;
+    }
+    main .content h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #ff69b4;
+    }
+    main .content p {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+    .btn-primary {
+      display: inline-block;
+      padding: 12px 25px;
+      background: #ff69b4;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .btn-primary:hover {
+      background: #ff1493;
+    }
+
+    /* Registro dinámico */
+    #registroContainer {
+      display: none;
+      background: #2b2b2b;
+      width: 350px;
+      margin: 20px auto;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 192, 203, 0.5);
+    }
+    #registroContainer h2 {
+      text-align: center;
+      color: #ff69b4;
+      margin-bottom: 20px;
+    }
+    #registroContainer label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    #registroContainer input[type="text"],
+    #registroContainer input[type="email"],
+    #registroContainer input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    #registroContainer input[type="submit"] {
+      background: #ff69b4;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      transition: 0.3s;
+    }
+    #registroContainer input[type="submit"]:hover {
+      background: #ff1493;
+    }
+    #registroContainer small {
+      color: #ffb6c1;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #2b2b2b;
+      color: #ffb6c1;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">🎬 FilmTrack</div>
+    <nav>
+      <a href="login.html">Iniciar sesión</a>
+    </nav>
+  </header>
+
+  <main class="hero">
+    <div class="content">
+      <h1>Tu universo de películas y series</h1>
+      <p>Organizá, recordá y disfrutá lo que más te gusta del cine y la TV.</p>
+      <a href="#" id="comenzarBtn" class="btn-primary">Comenzar</a>
+    </div>
+  </main>
+
+  <!-- Formulario de registro dinámico -->
+  <div id="registroContainer">
+    <h2>Registro</h2>
+    <form id="registroForm">
+      <label for="nombre">Nombre y Apellido</label>
+      <input type="text" id="nombre" name="nombre" placeholder="Ej: Norali Pérez" required>
+
+      <label for="usuario">Nombre de Usuario</label>
+      <input type="text" id="usuario" name="usuario" placeholder="Ej: norali123" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="ejemplo@email.com" required>
+      <small id="emailError"></small>
+
+      <label for="clave">Contraseña</label>
+      <input type="password" id="clave" name="clave" placeholder="Contraseña" required>
+      <small id="claveError"></small>
+
+      <label for="fechaNacimiento">Fecha de Nacimiento</label>
+      <input type="text" id="fechaNacimiento" name="fechaNacimiento" placeholder="dd-mm-aaaa" required>
+      <small id="fechaError"></small>
+
+      <input type="submit" value="Registrarse">
+    </form>
+  </div>
+
+  <footer>
+    <p>© 2025 FilmTrack — Hecho con 💜 por Norali</p>
+  </footer>
+
+  <script>
+  const comenzarBtn = document.getElementById('comenzarBtn');
+  const registroContainer = document.getElementById('registroContainer');
+  const form = document.getElementById('registroForm');
+  const emailError = document.getElementById('emailError');
+  const claveError = document.getElementById('claveError');
+  const fechaError = document.getElementById('fechaError');
+
+  // Mostrar formulario de registro
+  comenzarBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    registroContainer.style.display = 'block';
+    comenzarBtn.style.display = 'none';
+  });
+
+  // Validaciones + conexión al backend
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    let valido = true;
+
+    const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
+    if (!emailRegex.test(form.email.value)) {
+      emailError.textContent = "Formato de email inválido";
+      valido = false;
+    } else {
+      emailError.textContent = "";
+    }
+
+    if (form.clave.value.length < 5 || form.clave.value.includes(" ")) {
+      claveError.textContent = "Contraseña inválida (mín 5 caracteres, sin espacios)";
+      valido = false;
+    } else {
+      claveError.textContent = "";
+    }
+
+    const fechaRegex = /^\d{2}-\d{2}-\d{4}$/;
+    if (!fechaRegex.test(form.fechaNacimiento.value)) {
+      fechaError.textContent = "Formato de fecha inválido (dd-mm-aaaa)";
+      valido = false;
+    } else {
+      fechaError.textContent = "";
+    }
+
+    ["nombre","usuario","email","clave","fechaNacimiento"].forEach(id => {
+      if (form[id].value.trim() === "") {
+        alert("Todos los campos son obligatorios");
+        valido = false;
+      }
+    });
+
+    if (!valido) return;
+
+    // 🔹 Si todo está OK, enviar al backend
+    const usuario = {
+      nombre: form.nombre.value,
+      nombreUsuario: form.usuario.value,
+      email: form.email.value,
+      clave: form.clave.value,
+      fechaNacimiento: form.fechaNacimiento.value.split("-").reverse().join("-")
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/usuarios/registrar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(usuario)
+      });
+
+      if (response.ok) {
+        alert("✅ Usuario registrado con éxito!");
+        form.reset();
+      } else {
+        alert("❌ Error al registrar el usuario.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("⚠️ No se pudo conectar con el servidor.");
+    }
+  });
+</script>
+
+</body>
+</html>

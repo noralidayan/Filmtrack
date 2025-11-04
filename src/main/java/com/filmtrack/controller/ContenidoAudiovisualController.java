@@ -1,18 +1,29 @@
 package com.filmtrack.controller;
 
 import com.filmtrack.model.ContenidoAudiovisual;
+import com.filmtrack.service.UsuarioService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
+@RequestMapping("/contenido")
+@CrossOrigin(origins = "http://localhost:5500")
 public class ContenidoAudiovisualController {
 
-    public void mostrarInfo(ContenidoAudiovisual contenido) {
+    private final UsuarioService usuarioService;
+
+    public ContenidoAudiovisualController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
+    @GetMapping("/{nombre}")
+    public ResponseEntity<ContenidoAudiovisual> obtenerContenido(@PathVariable String nombre) {
+        ContenidoAudiovisual contenido = usuarioService.obtenerContenidoPorNombre(nombre);
+
         if (contenido == null) {
-            System.out.println("No hay contenido para mostrar.");
-            return;
+            return ResponseEntity.notFound().build();
         }
 
-        System.out.println("Nombre: " + contenido.getNombre());
-        System.out.println("Género: " + contenido.getGenero());
-        System.out.println("Puntuación: " +
-                (contenido.getPuntuacionEnEstrellas() == 0 ? "sin puntuar" : contenido.getPuntuacionEnEstrellas() + "⭐"));
+        return ResponseEntity.ok(contenido);
     }
 }

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FilmTrack | Historial Visto</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top left, #2a003d, #000);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: #1a1a1a;
+      border-bottom: 2px solid #ff69b4;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 15px 0;
+    }
+
+    header a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    header a:hover { background: #ff69b4; }
+
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #ff69b4;
+      margin-bottom: 20px;
+    }
+
+    #buscador {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 25px;
+      font-size: 15px;
+    }
+
+    table {
+      width: 80%;
+      border-collapse: collapse;
+      background: #2b2b2b;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(255,105,180,0.3);
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    th {
+      background: #3a3a3a;
+      color: #ff69b4;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+
+    tr:nth-child(even) { background-color: #242424; }
+    tr:hover { background-color: #3a003f; }
+
+    .btn-agregar {
+      position: fixed;
+      right: 30px;
+      bottom: 30px;
+      background: #ff69b4;
+      border: none;
+      color: white;
+      font-size: 18px;
+      padding: 14px 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .form-flotante {
+      position: fixed;
+      right: 20px;
+      bottom: 30px;
+      background: #2b2b2b;
+      border: 2px solid #ff69b4;
+      border-radius: 12px;
+      padding: 20px;
+      width: 300px;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 0 20px rgba(255,105,180,0.4);
+    }
+
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-header h3 {
+      margin: 0;
+      color: #ff69b4;
+    }
+
+    .btn-cerrar {
+      background: transparent;
+      border: none;
+      color: #ff69b4;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .form-flotante label {
+      display: block;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .form-flotante input, .form-flotante select {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      margin-top: 5px;
+    }
+
+    .form-flotante button[type="submit"] {
+      margin-top: 15px;
+      padding: 10px;
+      background: #ff69b4;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .form-flotante button[type="submit"]:hover {
+      background: #ff1493;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="usuario.html">🏠 Inicio</a>
+    <a href="favoritos.html">⭐ Favoritos</a>
+    <a href="login.html">🚪 Cerrar sesión</a>
+  </header>
+
+  <div class="content">
+    <h1>🕒 Historial Visto</h1>
+    <input type="text" id="buscador" placeholder="Buscar por nombre...">
+    <table id="tablaHistorial">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Fecha vista</th>
+          <th>Puntuación ⭐</th>
+        </tr>
+      </thead>
+      <tbody id="tablaCuerpo"></tbody>
+    </table>
+  </div>
+
+  <button class="btn-agregar" id="abrirForm">+</button>
+
+  <div class="form-flotante" id="formFlotante">
+    <div class="form-header">
+      <h3>Agregar al Historial</h3>
+      <button class="btn-cerrar" id="cerrarForm">✖</button>
+    </div>
+    <form id="historialForm">
+      <label for="nombreContenido">Nombre del contenido</label>
+      <input type="text" id="nombreContenido" required>
+
+      <label for="fechaVista">Fecha vista</label>
+      <input type="date" id="fechaVista" required>
+
+      <label for="puntuacion">Puntuación (1 a 5)</label>
+      <select id="puntuacion" required>
+        <option value="">Seleccionar</option>
+        <option value="1">⭐</option>
+        <option value="2">⭐⭐</option>
+        <option value="3">⭐⭐⭐</option>
+        <option value="4">⭐⭐⭐⭐</option>
+        <option value="5">⭐⭐⭐⭐⭐</option>
+      </select>
+
+      <button type="submit">Guardar</button>
+    </form>
+  </div>
+
+  <script>
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+    const tablaCuerpo = document.getElementById("tablaCuerpo");
+    const buscador = document.getElementById("buscador");
+    const formFlotante = document.getElementById("formFlotante");
+    const btnAbrir = document.getElementById("abrirForm");
+    const btnCerrar = document.getElementById("cerrarForm");
+    const historialForm = document.getElementById("historialForm");
+    let historial = [];
+
+    // abrir y cerrar formulario
+    btnAbrir.addEventListener("click", () => formFlotante.style.display = "flex");
+    btnCerrar.addEventListener("click", () => formFlotante.style.display = "none");
+
+    // cargar historial desde backend
+    async function cargarHistorial() {
+      const response = await fetch(`http://localhost:8080/usuarios/${usuario.id}/historial`);
+      historial = await response.json();
+      mostrarHistorial(historial);
+    }
+
+    // mostrar historial (corrige nombre del contenido)
+    function mostrarHistorial(lista) {
+      tablaCuerpo.innerHTML = lista.map(c => `
+        <tr>
+          <td>${c.contenido?.nombre || c.nombre || "-"}</td>
+          <td>${c.fechaVisto || "-"}</td>
+          <td>${c.puntuacion ? "⭐".repeat(c.puntuacion) : "Sin puntuar"}</td>
+        </tr>
+      `).join("");
+    }
+
+    // filtro por nombre
+    buscador.addEventListener("input", (e) => {
+      const texto = e.target.value.toLowerCase();
+      const filtrados = historial.filter(c => 
+        (c.contenido?.nombre || c.nombre || "").toLowerCase().includes(texto)
+      );
+      mostrarHistorial(filtrados);
+    });
+
+    // enviar formulario
+    historialForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const body = {
+        nombreContenido: nombreContenido.value,
+        fechaVisto: fechaVista.value,
+        puntuacion: parseInt(puntuacion.value)
+      };
+
+      try {
+        const response = await fetch(`http://localhost:8080/usuarios/${usuario.id}/historial`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+
+        if (response.ok) {
+          alert("✅ Agregado al historial!");
+          historialForm.reset();
+          formFlotante.style.display = "none";
+          cargarHistorial();
+        } else {
+          alert("❌ Error al agregar al historial.");
+        }
+      } catch (error) {
+        alert("⚠️ No se pudo conectar con el servidor.");
+      }
+    });
+
+    cargarHistorial();
+  </script>
+</body>
+</html>

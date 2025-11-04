@@ -7,8 +7,6 @@
 
     <persistence-unit name="FilmtrackPU" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-
-        <!-- Clases de tu proyecto -->
         <class>com.filmtrack.model.Usuario</class>
         <class>com.filmtrack.model.ContenidoAudiovisual</class>
         <class>com.filmtrack.model.Visualizacion</class>

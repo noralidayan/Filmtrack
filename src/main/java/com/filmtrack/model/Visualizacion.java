@@ -1,5 +1,6 @@
 package com.filmtrack.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -14,12 +15,15 @@ public class Visualizacion {
     private int puntuacion = 0;
     private LocalDate fechaVisto;
 
+    // mostramos el contenido (para que se vea el nombre en el frontend)
     @ManyToOne
     @JoinColumn(name = "contenido_id")
     private ContenidoAudiovisual contenido;
 
+    // ocultamos el usuario (para evitar bucle con Usuario.visualizaciones)
     @ManyToOne
     @JoinColumn(name = "usuario_id")
+    @JsonIgnore
     private Usuario usuario;
 
     public Visualizacion() {}
@@ -30,6 +34,12 @@ public class Visualizacion {
         this.fechaVisto = fechaVisto;
         this.activo = true;
         this.puntuacion = 0;
+    }
+
+    @Transient
+    public String getEstrellas() {
+        if (puntuacion <= 0) return "Sin puntuar";
+        return "⭐".repeat(puntuacion);
     }
 
     // Getters y Setters

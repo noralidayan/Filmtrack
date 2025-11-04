@@ -34,6 +34,7 @@ public class UsuarioRestController {
             return ResponseEntity.badRequest().build();
         }
     }
+
     @GetMapping("/{id}/favoritos")
     public ResponseEntity<List<ContenidoAudiovisual>> obtenerFavoritos(@PathVariable int id) {
         Usuario usu = usuarioService.obtenerUsuarioPorId(id);
@@ -41,6 +42,7 @@ public class UsuarioRestController {
 
         return ResponseEntity.ok(usuarioService.obtenerFavoritos(usu));
     }
+
     @GetMapping("/{id}/historial")
     public ResponseEntity<List<Visualizacion>> obtenerHistorial(@PathVariable int id) {
         Usuario usu = usuarioService.obtenerUsuarioPorId(id);
@@ -48,6 +50,7 @@ public class UsuarioRestController {
 
         return ResponseEntity.ok(usuarioService.obtenerHistorial(usu));
     }
+
     @PostMapping("/login")
     public ResponseEntity<Usuario> login(@RequestBody Map<String, String> body) {
         Usuario usu = usuarioService.iniciarSesion(body.get("email"), body.get("clave"));

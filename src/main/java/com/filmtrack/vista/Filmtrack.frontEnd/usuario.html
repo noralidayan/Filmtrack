@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FilmTrack | Mi Panel</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top left, #2a003d, #000);
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1a1a1a;
+      padding: 15px 40px;
+      border-bottom: 2px solid #ff69b4;
+      position: relative;
+      z-index: 2; /* el header queda arriba del fondo pero debajo del modal */
+    }
+
+    .navbar h2 {
+      color: #ff69b4;
+      margin: 0;
+    }
+
+    .navbar .menu a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .navbar .menu a:hover {
+      color: #ff69b4;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #ff69b4;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      background: #ff69b4;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #ff1493;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 10; /* el modal queda por encima de todo */
+    }
+
+    .modal-content {
+      background: #2b2b2b;
+      padding: 25px;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 0 25px rgba(255,105,180,0.6);
+      text-align: left;
+      position: relative;
+      animation: aparecer 0.3s ease-out;
+    }
+
+    @keyframes aparecer {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .close {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 20px;
+      cursor: pointer;
+      color: #ff69b4;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <h2>🎬 FilmTrack</h2>
+    <div class="menu">
+      <a href="favoritos.html">⭐ Favoritos</a>
+      <a href="historial.html">🕒 Historial</a>
+      <a href="#" id="btnAgregar">➕ Agregar contenido</a>
+      <a href="#" id="btnLogout">🚪 Cerrar sesión</a>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1>Bienvenid@, <span id="usuarioNombre"></span> 👋</h1>
+    <p>Seleccioná una opción del menú o agregá contenido a tu lista.</p>
+  </div>
+
+  <!-- Modal agregar contenido -->
+  <div class="modal" id="modalAgregar">
+    <div class="modal-content">
+      <span class="close" id="cerrarModal">&times;</span>
+      <h3>Agregar contenido</h3>
+
+      <form id="contenidoForm">
+        <label for="nombreContenido">Nombre del contenido</label>
+        <input type="text" id="nombreContenido" required>
+
+        <label for="tipo">Agregar a:</label>
+        <select id="tipo" required>
+          <option value="">--Seleccionar--</option>
+          <option value="favorito">Favoritos</option>
+          <option value="historial">Historial visto</option>
+        </select>
+
+        <!-- Campos de Favoritos -->
+        <div id="camposFavoritos" style="display:none;">
+          <label for="genero">Género</label>
+          <input type="text" id="genero">
+
+          <label for="anioLanzamiento">Año de lanzamiento</label>
+          <input type="number" id="anioLanzamiento" min="1900" max="2025">
+        </div>
+
+        <!-- Campos de Historial -->
+        <div id="camposHistorial" style="display:none;">
+          <label for="fechaVista">Fecha de visualización</label>
+          <input type="date" id="fechaVista">
+
+          <label for="puntaje">Puntuación (1 a 5 ⭐)</label>
+          <select id="puntaje">
+            <option value="">--Seleccionar--</option>
+            <option value="1">⭐</option>
+            <option value="2">⭐⭐</option>
+            <option value="3">⭐⭐⭐</option>
+            <option value="4">⭐⭐⭐⭐</option>
+            <option value="5">⭐⭐⭐⭐⭐</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn">Guardar</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+    if (!usuario) {
+      window.location.href = "login.html";
+    } else {
+      document.getElementById("usuarioNombre").textContent = usuario.nombreUsuario || usuario.nombre || "usuario";
+    }
+
+    document.getElementById("btnLogout").addEventListener("click", () => {
+      localStorage.removeItem("usuarioLogueado");
+      window.location.href = "login.html";
+    });
+
+    const modal = document.getElementById("modalAgregar");
+    const btnAgregar = document.getElementById("btnAgregar");
+    const cerrarModal = document.getElementById("cerrarModal");
+    const tipoSelect = document.getElementById("tipo");
+    const camposHistorial = document.getElementById("camposHistorial");
+    const camposFavoritos = document.getElementById("camposFavoritos");
+
+    btnAgregar.addEventListener("click", () => modal.style.display = "flex");
+    cerrarModal.addEventListener("click", () => modal.style.display = "none");
+    window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
+
+    tipoSelect.addEventListener("change", () => {
+      camposHistorial.style.display = tipoSelect.value === "historial" ? "block" : "none";
+      camposFavoritos.style.display = tipoSelect.value === "favorito" ? "block" : "none";
+    });
+
+    document.getElementById("contenidoForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const nombre = document.getElementById("nombreContenido").value.trim();
+      const tipo = tipoSelect.value;
+      if (!tipo) return alert("Seleccioná a qué lista agregarlo.");
+
+      let endpoint = "";
+      let body = { nombreContenido: nombre };
+
+      if (tipo === "favorito") {
+        endpoint = `http://localhost:8080/usuarios/${usuario.id}/favoritos`;
+        body.genero = document.getElementById("genero").value.trim();
+        body.anioLanzamiento = parseInt(document.getElementById("anioLanzamiento").value) || null;
+
+      } else if (tipo === "historial") {
+        endpoint = `http://localhost:8080/usuarios/${usuario.id}/historial`;
+        body.fechaVisto = document.getElementById("fechaVista").value;
+        body.puntuacion = parseInt(document.getElementById("puntaje").value) || 0;
+      }
+
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+
+        if (response.ok) {
+          alert("✅ Contenido agregado correctamente!");
+          document.getElementById("contenidoForm").reset();
+          camposFavoritos.style.display = "none";
+          camposHistorial.style.display = "none";
+          modal.style.display = "none";
+        } else {
+          alert("❌ Error al agregar el contenido.");
+        }
+      } catch (error) {
+        alert("⚠️ No se pudo conectar con el servidor.");
+      }
+    });
+  </script>
+</body>
+</html>

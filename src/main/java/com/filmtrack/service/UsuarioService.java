@@ -36,7 +36,6 @@ public class UsuarioService {
         return email != null && email.matches(regex);
     }
 
-
     public Usuario crearUsuario(String nombre, String email, String nombreUsuario, String clave, LocalDate fechaNacimiento) {
         if (!validarEmail(email)) return null;
 
@@ -52,9 +51,8 @@ public class UsuarioService {
         nuevo.setFavoritos(new ArrayList<>());
         nuevo.setHistorialVistos(new ArrayList<>());
 
-        return usuarioRepository.save(nuevo); // 👈 este reemplaza a usuarioDAO.guardar
+        return usuarioRepository.save(nuevo);
     }
-
 
     private boolean validarUsuario(Usuario usuario) {
         return usuario != null;
@@ -66,11 +64,7 @@ public class UsuarioService {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
         if (usuario.isEmpty()) return null;
 
-        if (BCrypt.checkpw(claveIngresada, usuario.get().getClave())) {
-            return usuario.get();
-        } else {
-            return null;
-        }
+        return BCrypt.checkpw(claveIngresada, usuario.get().getClave()) ? usuario.get() : null;
     }
 
     public boolean agregarFavorito(Usuario usu, String nombreContenido) {
@@ -83,13 +77,10 @@ public class UsuarioService {
                     return contenidoRepository.save(nuevo);
                 });
 
-        if (usu.getFavoritos() == null) {
-            usu.setFavoritos(new ArrayList<>());
-        }
+        if (usu.getFavoritos() == null) usu.setFavoritos(new ArrayList<>());
 
         boolean existe = usu.getFavoritos().stream()
                 .anyMatch(c -> c.getId() == contenido.getId());
-
         if (existe) return false;
 
         usu.getFavoritos().add(contenido);
@@ -99,11 +90,10 @@ public class UsuarioService {
 
     public List<ContenidoAudiovisual> obtenerFavoritos(Usuario usu) {
         if (!validarUsuario(usu)) return new ArrayList<>();
-
-        Optional<Usuario> usuarioDB = usuarioRepository.findById(usu.getId());
-        return usuarioDB.map(Usuario::getFavoritos).orElse(new ArrayList<>());
+        return usuarioRepository.findById(usu.getId())
+                .map(Usuario::getFavoritos)
+                .orElse(new ArrayList<>());
     }
-
 
     public boolean agregarAlHistorial(Usuario usu, ContenidoAudiovisual contenido) {
         if (!validarUsuario(usu)) return false;
@@ -111,13 +101,10 @@ public class UsuarioService {
         ContenidoAudiovisual contenidoDB = contenidoRepository.findByNombre(contenido.getNombre())
                 .orElseGet(() -> contenidoRepository.save(contenido));
 
-        if (usu.getHistorialVistos() == null) {
-            usu.setHistorialVistos(new ArrayList<>());
-        }
+        if (usu.getHistorialVistos() == null) usu.setHistorialVistos(new ArrayList<>());
 
         Optional<Visualizacion> existente = visualizacionRepository
                 .findByUsuarioIdAndContenidoId(usu.getId(), contenidoDB.getId());
-
         if (existente.isPresent()) return false;
 
         Visualizacion v = new Visualizacion();
@@ -126,16 +113,16 @@ public class UsuarioService {
         v.setFechaVisto(LocalDate.now());
 
         visualizacionRepository.save(v);
-
         usu.getHistorialVistos().add(v);
         usuarioRepository.save(usu);
 
         return true;
     }
 
+    // 👇 cambio importante: usar findByUsuarioId
     public List<Visualizacion> obtenerHistorial(Usuario usu) {
         if (!validarUsuario(usu)) return new ArrayList<>();
-        return visualizacionRepository.findAllByUsuarioId(usu.getId());
+        return visualizacionRepository.findByUsuarioId(usu.getId());
     }
 
     public boolean puntuarContenido(Usuario usu, ContenidoAudiovisual contenido, int valor) {
@@ -153,8 +140,6 @@ public class UsuarioService {
         return true;
     }
 
-    // UsuarioService.java
-
     public Usuario obtenerUsuarioPorId(int id) {
         return usuarioRepository.findById(id).orElse(null);
     }
@@ -162,5 +147,4 @@ public class UsuarioService {
     public ContenidoAudiovisual obtenerContenidoPorNombre(String nombre) {
         return contenidoRepository.findByNombre(nombre).orElse(null);
     }
-
 }
