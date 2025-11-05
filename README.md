@@ -1,7 +1,7 @@
 # 🎬 FilmTrack
 
 **FilmTrack** es una aplicación desarrollada en **Java + Spring Boot**, con integración de un **front-end en HTML, CSS y JavaScript**, que permite a los usuarios gestionar y registrar sus películas y series favoritas.
-Incluye funcionalidades de inicio de sesión, historial de visualizaciones, favoritos y administración de contenidos.
+Incluye funcionalidades de registro, inicio de sesión, historial de visualizaciones y gestión de favoritos.
 
 ---
 
@@ -27,21 +27,6 @@ Esta es la versión estable fusionada a `master`, con:
 * **Maven**
 * **HTML5 / CSS3 / JavaScript**
 * **IntelliJ IDEA**
-
----
-
-## 🤖 IA como aliada de desarrollo
-
-FilmTrack se desarrolló con el apoyo de **Inteligencia Artificial (ChatGPT)** como asistente técnico y creativo.
-La IA fue una herramienta clave para potenciar mi aprendizaje y productividad, ayudándome a:
-
-* Mejorar la arquitectura del proyecto (MVC + capas)
-* Resolver errores en **Hibernate**, **Spring Boot** y la capa de persistencia
-* Generar ideas para optimizar la estructura del código
-* Crear interfaces web limpias, funcionales y coherentes con el diseño del sistema
-* Documentar el proceso y mantener una visión clara del proyecto
-
-💬 La IA fue utilizada como *asistente de desarrollo*, **sin reemplazar el razonamiento ni la lógica propia**, sino fortaleciendo mis conocimientos en **Programación Orientada a Objetos** y buenas prácticas en programación.
 
 ---
 
@@ -87,6 +72,17 @@ spring.datasource.password=
 
 ---
 
+## 🌍 Repositorio y demo del Front-End
+
+FilmTrack cuenta también con un **repositorio dedicado al front-end**, desarrollado de forma modular y desplegado en GitHub Pages para su visualización pública.
+
+🔗 Repositorio del front-end: [Filmtrack_Frontend](https://github.com/noralidayan/Filmtrack_Frontend)
+🌐 Versión online: [https://noralidayan.github.io/Filmtrack_Frontend/](https://noralidayan.github.io/Filmtrack_Frontend/)
+
+> El front-end consume los endpoints REST del backend alojado en este mismo repositorio (`http://localhost:8080` durante la ejecución local).
+
+---
+
 ## 🌐 Formas de ejecutar el Front-End
 
 FilmTrack puede ejecutarse de **tres maneras diferentes**, según el entorno o la necesidad:
@@ -94,7 +90,6 @@ FilmTrack puede ejecutarse de **tres maneras diferentes**, según el entorno o l
 ### 🩵 1. **Versión integrada (recomendada)**
 
 👉 [http://localhost:8080/filmtrack.html](http://localhost:8080/filmtrack.html)
-
 Ejecuta el backend y el frontend juntos en el mismo servidor Spring Boot.
 
 ---
@@ -149,14 +144,29 @@ src/
  ├── pom.xml                              # Dependencias y configuración de Maven
  └── target/                              # Archivos compilados generados
 ```
-## 🌍 Repositorio y demo del Front-End
 
-FilmTrack cuenta también con un **repositorio dedicado al front-end**, desarrollado de forma modular y desplegado en GitHub Pages para su visualización pública.
+---
 
-🔗 Repositorio del front-end: [Filmtrack_Frontend](https://github.com/noralidayan/Filmtrack_Frontend)  
-🌐 Versión online: [https://noralidayan.github.io/Filmtrack_Frontend/](https://noralidayan.github.io/Filmtrack_Frontend/)
+## 🤖 IA como aliada de desarrollo
 
-> El front-end consume los endpoints REST del backend alojado en este mismo repositorio (`http://localhost:8080` durante la ejecución local).
+FilmTrack se desarrolló con el apoyo de **Inteligencia Artificial (ChatGPT)** como asistente técnico y creativo.
+La IA fue una herramienta clave para potenciar mi aprendizaje y productividad, ayudándome a:
+
+* Mejorar la arquitectura del proyecto (MVC + capas)
+* Resolver errores en **Hibernate**, **Spring Boot** y la capa de persistencia
+* Generar ideas para optimizar la estructura del código
+* Crear interfaces web limpias, funcionales y coherentes con el diseño del sistema
+* Documentar el proceso y mantener una visión clara del proyecto
+
+💬 La IA fue utilizada como *asistente de desarrollo*, **sin reemplazar el razonamiento ni la lógica propia**, sino fortaleciendo mis conocimientos en **Programación Orientada a Objetos** y buenas prácticas en programación.
+
+---
+
+## 🔮 Próximos pasos
+
+* Implementar despliegue del backend en la nube (por ejemplo, **Render** o **Railway**)
+* Migrar la base de datos a un servicio remoto como **PlanetScale** o **AWS RDS**
+* Integración de API externas de cine (TMDb u oMDb)
 
 ---
 
