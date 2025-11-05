@@ -24,7 +24,7 @@
       padding: 15px 40px;
       border-bottom: 2px solid #ff69b4;
       position: relative;
-      z-index: 2; /* el header queda arriba del fondo pero debajo del modal */
+      z-index: 2;
     }
 
     .navbar h2 {
@@ -75,7 +75,6 @@
       background: #ff1493;
     }
 
-    /* Modal */
     .modal {
       display: none;
       position: fixed;
@@ -83,7 +82,7 @@
       background: rgba(0, 0, 0, 0.8);
       justify-content: center;
       align-items: center;
-      z-index: 10; /* el modal queda por encima de todo */
+      z-index: 10;
     }
 
     .modal-content {
@@ -163,7 +162,17 @@
         <!-- Campos de Favoritos -->
         <div id="camposFavoritos" style="display:none;">
           <label for="genero">Género</label>
-          <input type="text" id="genero">
+          <select id="genero" required>
+            <option value="">Seleccionar género...</option>
+            <option value="Acción">Acción</option>
+            <option value="Comedia">Comedia</option>
+            <option value="Drama">Drama</option>
+            <option value="Ciencia ficción">Ciencia ficción</option>
+            <option value="Animación">Animación</option>
+            <option value="Romance">Romance</option>
+            <option value="Terror">Terror</option>
+            <option value="Documental">Documental</option>
+          </select>
 
           <label for="anioLanzamiento">Año de lanzamiento</label>
           <input type="number" id="anioLanzamiento" min="1900" max="2025">
@@ -231,8 +240,16 @@
 
       if (tipo === "favorito") {
         endpoint = `http://localhost:8080/usuarios/${usuario.id}/favoritos`;
-        body.genero = document.getElementById("genero").value.trim();
-        body.anioLanzamiento = parseInt(document.getElementById("anioLanzamiento").value) || null;
+        const genero = document.getElementById("genero").value.trim();
+        const anio = parseInt(document.getElementById("anioLanzamiento").value) || null;
+
+        if (!genero) {
+          alert("Por favor, seleccioná un género.");
+          return;
+        }
+
+        body.genero = genero;
+        body.fechaLanzamiento = anio ? `${anio}-01-01` : null;
 
       } else if (tipo === "historial") {
         endpoint = `http://localhost:8080/usuarios/${usuario.id}/historial`;

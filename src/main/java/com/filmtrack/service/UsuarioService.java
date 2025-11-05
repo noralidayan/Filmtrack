@@ -14,6 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ Servicio que maneja las operaciones principales relacionadas con los usuarios.
+ Incluye la creación de cuentas, el inicio de sesión y la gestión de favoritos e historial.
+ Forma parte de la capa de lógica del sistema, donde se definen las reglas que vinculan
+ la interacción del usuario con la base de datos.
+
+ Conceptos de POO presentes:
+ - Abstracción: agrupa las acciones del dominio “usuario”.
+ - Encapsulamiento: restringe el acceso directo a los repositorios, centralizando la lógica.
+ - Responsabilidad única: esta clase se encarga solo de la lógica asociada al usuario,
+ separándola del controlador y de la capa de persistencia.
+ */
 @Service
 public class UsuarioService {
 
@@ -31,15 +43,17 @@ public class UsuarioService {
         this.contenidoRepository = contenidoRepository;
     }
 
+    /** Verifica si un email tiene formato válido mediante expresión regular. */
     public boolean validarEmail(String email) {
         String regex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
         return email != null && email.matches(regex);
     }
 
+    /** Crea un nuevo usuario en el sistema con validaciones y encriptación de contraseña. */
     public Usuario crearUsuario(String nombre, String email, String nombreUsuario, String clave, LocalDate fechaNacimiento) {
         if (!validarEmail(email)) return null;
 
-        Optional<Usuario> existente = usuarioRepository.findByEmail(email);
+        Optional<Usuario> existente = usuarioRepository.findByEmailIgnoreCase(email);
         if (existente.isPresent()) return null;
 
         Usuario nuevo = new Usuario();
@@ -58,15 +72,17 @@ public class UsuarioService {
         return usuario != null;
     }
 
+    /** Inicia sesión comprobando correo y contraseña encriptada. */
     public Usuario iniciarSesion(String email, String claveIngresada) {
         if (!validarEmail(email)) return null;
 
-        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+        Optional<Usuario> usuario = usuarioRepository.findByEmailIgnoreCase(email);
         if (usuario.isEmpty()) return null;
 
         return BCrypt.checkpw(claveIngresada, usuario.get().getClave()) ? usuario.get() : null;
     }
 
+    /** Agrega un contenido a favoritos, creándolo si no existe. */
     public boolean agregarFavorito(Usuario usu, String nombreContenido) {
         if (!validarUsuario(usu)) return false;
 
@@ -88,6 +104,33 @@ public class UsuarioService {
         return true;
     }
 
+    /**
+     Método sobrecargado que permite registrar desde el frontend un contenido
+     audiovisual con su nombre, género y año de lanzamiento.
+     Ahora la fecha se maneja como texto (String) para facilitar la carga de datos.
+     */
+    public boolean agregarFavorito(Usuario usu, String nombreContenido, String genero, String fechaLanzamiento) {
+        if (!validarUsuario(usu)) return false;
+
+        ContenidoAudiovisual contenido = contenidoRepository.findByNombre(nombreContenido)
+                .orElseGet(() -> {
+                    ContenidoAudiovisual nuevo = new ContenidoAudiovisual();
+                    nuevo.setNombre(nombreContenido);
+                    nuevo.setGenero(genero);
+                    nuevo.setFechaLanzamiento(fechaLanzamiento != null ? fechaLanzamiento : "Desconocido");
+                    return contenidoRepository.save(nuevo);
+                });
+
+        if (usu.getFavoritos() == null) usu.setFavoritos(new ArrayList<>());
+
+        if (usu.getFavoritos().contains(contenido)) return false;
+
+        usu.getFavoritos().add(contenido);
+        usuarioRepository.save(usu);
+        return true;
+    }
+
+    /** Devuelve los contenidos marcados como favoritos por el usuario. */
     public List<ContenidoAudiovisual> obtenerFavoritos(Usuario usu) {
         if (!validarUsuario(usu)) return new ArrayList<>();
         return usuarioRepository.findById(usu.getId())
@@ -95,13 +138,16 @@ public class UsuarioService {
                 .orElse(new ArrayList<>());
     }
 
-    public boolean agregarAlHistorial(Usuario usu, ContenidoAudiovisual contenido) {
+    /**
+     Agrega un contenido al historial de visualizaciones del usuario.
+     Permite registrar fecha y puntuación si el frontend las proporciona.
+     Si no se envían, se guarda la fecha actual y la puntuación por defecto (0 = sin puntuar).
+     */
+    public boolean agregarAlHistorial(Usuario usu, ContenidoAudiovisual contenido, LocalDate fecha, int puntuacion) {
         if (!validarUsuario(usu)) return false;
 
         ContenidoAudiovisual contenidoDB = contenidoRepository.findByNombre(contenido.getNombre())
                 .orElseGet(() -> contenidoRepository.save(contenido));
-
-        if (usu.getHistorialVistos() == null) usu.setHistorialVistos(new ArrayList<>());
 
         Optional<Visualizacion> existente = visualizacionRepository
                 .findByUsuarioIdAndContenidoId(usu.getId(), contenidoDB.getId());
@@ -110,21 +156,26 @@ public class UsuarioService {
         Visualizacion v = new Visualizacion();
         v.setUsuario(usu);
         v.setContenido(contenidoDB);
-        v.setFechaVisto(LocalDate.now());
+        v.setFechaVisto(fecha != null ? fecha : LocalDate.now());
+        v.setPuntuacion((puntuacion >= 1 && puntuacion <= 5) ? puntuacion : 0);
+        v.setActivo(true);
 
         visualizacionRepository.save(v);
+
+        if (usu.getHistorialVistos() == null) usu.setHistorialVistos(new ArrayList<>());
         usu.getHistorialVistos().add(v);
         usuarioRepository.save(usu);
 
         return true;
     }
 
-    // 👇 cambio importante: usar findByUsuarioId
+    /** Obtiene todas las visualizaciones registradas de un usuario. */
     public List<Visualizacion> obtenerHistorial(Usuario usu) {
         if (!validarUsuario(usu)) return new ArrayList<>();
         return visualizacionRepository.findByUsuarioId(usu.getId());
     }
 
+    /** Permite modificar la puntuación de un contenido ya visto. */
     public boolean puntuarContenido(Usuario usu, ContenidoAudiovisual contenido, int valor) {
         if (!validarUsuario(usu) || valor < 1 || valor > 5) return false;
 

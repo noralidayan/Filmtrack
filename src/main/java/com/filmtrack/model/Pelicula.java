@@ -1,9 +1,16 @@
 package com.filmtrack.model;
 
 import jakarta.persistence.Entity;
-import java.time.LocalDate;
 import java.util.List;
 
+/**
+ Clase que representa una Película dentro del sistema.
+ Extiende de ContenidoAudiovisual, aplicando herencia para reutilizar atributos comunes.
+ Conceptos de POO aplicados:
+ - Herencia: Pelicula hereda de ContenidoAudiovisual, reutilizando sus atributos y métodos.
+ - Polimorfismo: redefine toString() para mostrar información específica de películas.
+ - Encapsulamiento: los atributos están protegidos y se accede mediante getters y setters.
+ */
 @Entity
 public class Pelicula extends ContenidoAudiovisual {
 
@@ -13,13 +20,17 @@ public class Pelicula extends ContenidoAudiovisual {
         super();
     }
 
-    public Pelicula(String nombre, LocalDate fechaLanzamiento, int puntuacionEnEstrellas, String genero,
+    /**
+     Constructor completo que recibe todos los datos necesarios para crear una película.
+     Utiliza el constructor de la clase padre (super) y agrega la duración específica de este tipo de contenido.
+     */
+    public Pelicula(String nombre, String fechaLanzamiento, int puntuacionEnEstrellas, String genero,
                     List<Actor> reparto, int duracionEnMinutos) {
         super(nombre, fechaLanzamiento, puntuacionEnEstrellas, genero, reparto);
         this.duracionEnMinutos = duracionEnMinutos;
     }
 
-    // Getter y Setter
+    // Getters y Setters
     public int getDuracionEnMinutos() {
         return duracionEnMinutos;
     }

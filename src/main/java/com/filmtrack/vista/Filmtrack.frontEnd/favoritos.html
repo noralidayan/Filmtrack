@@ -141,7 +141,7 @@
       display: block;
     }
 
-    .form-flotante input {
+    .form-flotante input, .form-flotante select {
       width: 100%;
       padding: 10px;
       border: none;
@@ -199,7 +199,17 @@
       <input type="text" id="nombreContenido" required>
 
       <label for="genero">Género</label>
-      <input type="text" id="genero" required>
+      <select id="genero" required>
+        <option value="">Seleccionar género...</option>
+        <option value="Acción">Acción</option>
+        <option value="Comedia">Comedia</option>
+        <option value="Drama">Drama</option>
+        <option value="Ciencia ficción">Ciencia ficción</option>
+        <option value="Animación">Animación</option>
+        <option value="Romance">Romance</option>
+        <option value="Terror">Terror</option>
+        <option value="Documental">Documental</option>
+      </select>
 
       <label for="anioLanzamiento">Año de lanzamiento</label>
       <input type="number" id="anioLanzamiento" min="1900" max="2025" required>
@@ -208,68 +218,77 @@
     </form>
   </div>
 
-  <script>
-    const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
-    const tablaCuerpo = document.getElementById("tablaCuerpo");
-    const buscador = document.getElementById("buscador");
-    const formFlotante = document.getElementById("formFlotante");
-    const btnAbrir = document.getElementById("abrirForm");
-    const btnCerrar = document.getElementById("cerrarForm");
-    const favoritoForm = document.getElementById("favoritoForm");
-    let favoritos = [];
+<script>
+  const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
+  const tablaCuerpo = document.getElementById("tablaCuerpo");
+  const buscador = document.getElementById("buscador");
+  const formFlotante = document.getElementById("formFlotante");
+  const btnAbrir = document.getElementById("abrirForm");
+  const btnCerrar = document.getElementById("cerrarForm");
+  const favoritoForm = document.getElementById("favoritoForm");
+  let favoritos = [];
 
-    // abrir y cerrar formulario
-    btnAbrir.addEventListener("click", () => {
-      formFlotante.style.display = "flex";
-    });
-    btnCerrar.addEventListener("click", () => {
-      formFlotante.style.display = "none";
-    });
+  // abrir y cerrar formulario
+  btnAbrir.addEventListener("click", () => formFlotante.style.display = "flex");
+  btnCerrar.addEventListener("click", () => formFlotante.style.display = "none");
 
-    // cargar favoritos
-    async function cargarFavoritos() {
-      const response = await fetch(`http://localhost:8080/usuarios/${usuario.id}/favoritos`);
-      favoritos = await response.json();
-      mostrarFavoritos(favoritos);
+  // cargar favoritos
+  async function cargarFavoritos() {
+    const response = await fetch(`http://localhost:8080/usuarios/${usuario.id}/favoritos`);
+    favoritos = await response.json();
+    mostrarFavoritos(favoritos);
+  }
+
+  // mostrar favoritos (sin botón eliminar)
+  function mostrarFavoritos(lista) {
+    tablaCuerpo.innerHTML = lista.map(c => `
+      <tr>
+        <td>${c.nombre}</td>
+        <td>${c.genero || "-"}</td>
+        <td>${c.fechaLanzamiento ? c.fechaLanzamiento.split("-")[0] : "-"}</td>
+      </tr>
+    `).join("");
+  }
+
+  // filtro por nombre
+  buscador.addEventListener("input", (e) => {
+    const texto = e.target.value.toLowerCase();
+    const filtrados = favoritos.filter(c => c.nombre.toLowerCase().includes(texto));
+    mostrarFavoritos(filtrados);
+  });
+
+  // agregar nuevo favorito
+  favoritoForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const nombre = nombreContenido.value.trim();
+    const generoValor = genero.value.trim();
+    const anio = parseInt(anioLanzamiento.value);
+
+    if (!nombre || !generoValor || isNaN(anio)) {
+      alert("Por favor, completa todos los campos correctamente.");
+      return;
     }
 
-    // función para mostrar favoritos filtrados
-    function mostrarFavoritos(lista) {
-      tablaCuerpo.innerHTML = lista.map(c => `
-        <tr>
-          <td>${c.nombre}</td>
-          <td>${c.genero || "-"}</td>
-          <td>${c.anioLanzamiento || "-"}</td>
-        </tr>
-      `).join("");
-    }
+    const body = {
+      nombreContenido: nombre,
+      genero: generoValor,
+      fechaLanzamiento: `${anio}-01-01`
+    };
 
-    // filtro por nombre
-    buscador.addEventListener("input", (e) => {
-      const texto = e.target.value.toLowerCase();
-      const filtrados = favoritos.filter(c => c.nombre.toLowerCase().includes(texto));
-      mostrarFavoritos(filtrados);
+    await fetch(`http://localhost:8080/usuarios/${usuario.id}/favoritos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
     });
 
-    // agregar nuevo favorito
-    favoritoForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const body = {
-        nombreContenido: nombreContenido.value,
-        genero: genero.value,
-        anioLanzamiento: parseInt(anioLanzamiento.value)
-      };
-      await fetch(`http://localhost:8080/usuarios/${usuario.id}/favoritos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
-      favoritoForm.reset();
-      formFlotante.style.display = "none";
-      cargarFavoritos();
-    });
-
+    favoritoForm.reset();
+    formFlotante.style.display = "none";
     cargarFavoritos();
-  </script>
+  });
+
+  cargarFavoritos();
+</script>
+
 </body>
 </html>

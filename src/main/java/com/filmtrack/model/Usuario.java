@@ -4,14 +4,20 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+  Clase que representa a un Usuario dentro del sistema.
+  Hereda de Persona, aplicando herencia y agregando atributos y relaciones propias.
+ */
 @Entity
 public class Usuario extends Persona {
 
     private String nombreUsuario;
     private String email;
     private String clave;
-
+    /**
+      Relación muchos a muchos con ContenidoAudiovisual.
+      Representa los contenidos marcados como favoritos por el usuario.
+     */
     @ManyToMany
     @JoinTable(
             name = "usuario_favoritos",
@@ -19,7 +25,10 @@ public class Usuario extends Persona {
             inverseJoinColumns = @JoinColumn(name = "contenido_id")
     )
     private List<ContenidoAudiovisual> favoritos = new ArrayList<>();
-
+    /**
+      Relación uno a muchos con Visualizacion.
+      Representa el historial de contenidos vistos por el usuario.
+     */
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Visualizacion> historialVistos = new ArrayList<>();
 
@@ -77,13 +86,15 @@ public class Usuario extends Persona {
         this.historialVistos = historialVistos;
     }
 
+    /**
+      Redefinición del metodo toString().
+      Muestra información básica del usuario sin detallar relaciones completas.
+     */
     @Override
     public String toString() {
         return "Usuario{" +
                 "nombreUsuario='" + nombreUsuario + '\'' +
                 ", email='" + email + '\'' +
-                ", favoritos=" + favoritos +
-                ", historialVistos=" + historialVistos +
                 '}';
     }
 }
