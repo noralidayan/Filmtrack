@@ -149,6 +149,14 @@ src/
  ├── pom.xml                              # Dependencias y configuración de Maven
  └── target/                              # Archivos compilados generados
 ```
+## 🌍 Repositorio y demo del Front-End
+
+FilmTrack cuenta también con un **repositorio dedicado al front-end**, desarrollado de forma modular y desplegado en GitHub Pages para su visualización pública.
+
+🔗 Repositorio del front-end: [Filmtrack_Frontend](https://github.com/noralidayan/Filmtrack_Frontend)  
+🌐 Versión online: [https://noralidayan.github.io/Filmtrack_Frontend/](https://noralidayan.github.io/Filmtrack_Frontend/)
+
+> El front-end consume los endpoints REST del backend alojado en este mismo repositorio (`http://localhost:8080` durante la ejecución local).
 
 ---
 
