@@ -82,48 +82,36 @@ public class UsuarioService {
         return BCrypt.checkpw(claveIngresada, usuario.get().getClave()) ? usuario.get() : null;
     }
 
-    /** Agrega un contenido a favoritos, creándolo si no existe. */
-    public boolean agregarFavorito(Usuario usu, String nombreContenido) {
-        if (!validarUsuario(usu)) return false;
-
-        ContenidoAudiovisual contenido = contenidoRepository.findByNombre(nombreContenido)
-                .orElseGet(() -> {
-                    ContenidoAudiovisual nuevo = new ContenidoAudiovisual();
-                    nuevo.setNombre(nombreContenido);
-                    return contenidoRepository.save(nuevo);
-                });
-
-        if (usu.getFavoritos() == null) usu.setFavoritos(new ArrayList<>());
-
-        boolean existe = usu.getFavoritos().stream()
-                .anyMatch(c -> c.getId() == contenido.getId());
-        if (existe) return false;
-
-        usu.getFavoritos().add(contenido);
-        usuarioRepository.save(usu);
-        return true;
-    }
-
     /**
-     Método sobrecargado que permite registrar desde el frontend un contenido
-     audiovisual con su nombre, género y año de lanzamiento.
-     Ahora la fecha se maneja como texto (String) para facilitar la carga de datos.
+     * Método sobrecargado que permite registrar desde el frontend un contenido
+     * audiovisual con su nombre, género y año de lanzamiento.
+     * Ahora la fecha se maneja como texto (String) para facilitar la carga de datos.
      */
     public boolean agregarFavorito(Usuario usu, String nombreContenido, String genero, String fechaLanzamiento) {
-        if (!validarUsuario(usu)) return false;
+        if (!validarUsuario(usu) || nombreContenido == null || nombreContenido.isBlank()) return false;
 
         ContenidoAudiovisual contenido = contenidoRepository.findByNombre(nombreContenido)
                 .orElseGet(() -> {
                     ContenidoAudiovisual nuevo = new ContenidoAudiovisual();
                     nuevo.setNombre(nombreContenido);
-                    nuevo.setGenero(genero);
-                    nuevo.setFechaLanzamiento(fechaLanzamiento != null ? fechaLanzamiento : "Desconocido");
+                    nuevo.setGenero(
+                            (genero != null && !genero.isBlank())
+                                    ? genero
+                                    : "Desconocido"
+                    );
+                    nuevo.setFechaLanzamiento(
+                            (fechaLanzamiento != null && !fechaLanzamiento.isBlank())
+                                    ? fechaLanzamiento
+                                    : "1900-01-01"
+                    );
                     return contenidoRepository.save(nuevo);
                 });
 
         if (usu.getFavoritos() == null) usu.setFavoritos(new ArrayList<>());
 
-        if (usu.getFavoritos().contains(contenido)) return false;
+        boolean yaExiste = usu.getFavoritos().stream()
+                .anyMatch(c -> c.getId() == contenido.getId());
+        if (yaExiste) return false;
 
         usu.getFavoritos().add(contenido);
         usuarioRepository.save(usu);

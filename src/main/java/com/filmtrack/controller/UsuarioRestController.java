@@ -81,7 +81,7 @@ public class UsuarioRestController {
 
         String nombre = body.get("nombreContenido");
         String genero = body.get("genero");
-        String fechaLanzamiento = body.get("fechaLanzamiento"); // ahora se maneja como String
+        String fechaLanzamiento = body.get("fechaLanzamiento");
 
         boolean agregado = usuarioService.agregarFavorito(usu, nombre, genero, fechaLanzamiento);
 
@@ -89,6 +89,7 @@ public class UsuarioRestController {
                 ? ResponseEntity.ok("Agregado a favoritos correctamente.")
                 : ResponseEntity.badRequest().body("Ya estaba en favoritos o los datos son inválidos.");
     }
+
 
     /** Devuelve el historial de visualizaciones de un usuario determinado.
      Si no se encuentra el usuario, responde con un código 404. */

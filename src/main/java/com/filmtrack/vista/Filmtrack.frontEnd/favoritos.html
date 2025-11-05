@@ -162,6 +162,61 @@
     .form-flotante button[type="submit"]:hover {
       background: #ff1493;
     }
+
+    /* 🔹 ALERTAS PERSONALIZADAS 🔹 */
+    .custom-alert-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .custom-alert-box {
+      background: #1a1a1a;
+      border: 2px solid #ff69b4;
+      border-radius: 15px;
+      padding: 25px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(255,105,180,0.4);
+      animation: fadeIn 0.25s ease;
+    }
+
+    .custom-alert-box h3 {
+      margin: 0 0 10px;
+      color: #ff69b4;
+      font-size: 22px;
+    }
+
+    .custom-alert-box p {
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .custom-alert-box button {
+      background: #ff69b4;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .custom-alert-box button:hover {
+      background: #ff1493;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -203,11 +258,14 @@
         <option value="">Seleccionar género...</option>
         <option value="Acción">Acción</option>
         <option value="Comedia">Comedia</option>
+        <option value="Fantasía">Fantasía</option>
         <option value="Drama">Drama</option>
+        <option value="Misterio">Misterio</option>
         <option value="Ciencia ficción">Ciencia ficción</option>
         <option value="Animación">Animación</option>
         <option value="Romance">Romance</option>
         <option value="Terror">Terror</option>
+        <option value="Thriller">Thriller</option>
         <option value="Documental">Documental</option>
       </select>
 
@@ -216,6 +274,15 @@
 
       <button type="submit">Guardar</button>
     </form>
+  </div>
+
+  <!-- 🔹 ALERTA BONITA -->
+  <div class="custom-alert-overlay" id="customAlert">
+    <div class="custom-alert-box">
+      <h3>FilmTrack</h3>
+      <p id="alertMessage"></p>
+      <button onclick="cerrarAlerta()">Aceptar</button>
+    </div>
   </div>
 
 <script>
@@ -232,6 +299,18 @@
   btnAbrir.addEventListener("click", () => formFlotante.style.display = "flex");
   btnCerrar.addEventListener("click", () => formFlotante.style.display = "none");
 
+  // 🔹 funciones de alerta
+  function mostrarAlerta(mensaje) {
+    const overlay = document.getElementById("customAlert");
+    const msg = document.getElementById("alertMessage");
+    msg.textContent = mensaje;
+    overlay.style.display = "flex";
+  }
+
+  function cerrarAlerta() {
+    document.getElementById("customAlert").style.display = "none";
+  }
+
   // cargar favoritos
   async function cargarFavoritos() {
     const response = await fetch(`http://localhost:8080/usuarios/${usuario.id}/favoritos`);
@@ -239,7 +318,7 @@
     mostrarFavoritos(favoritos);
   }
 
-  // mostrar favoritos (sin botón eliminar)
+  // mostrar favoritos
   function mostrarFavoritos(lista) {
     tablaCuerpo.innerHTML = lista.map(c => `
       <tr>
@@ -250,14 +329,14 @@
     `).join("");
   }
 
-  // filtro por nombre
+  // filtro
   buscador.addEventListener("input", (e) => {
     const texto = e.target.value.toLowerCase();
     const filtrados = favoritos.filter(c => c.nombre.toLowerCase().includes(texto));
     mostrarFavoritos(filtrados);
   });
 
-  // agregar nuevo favorito
+  // agregar favorito con alerta
   favoritoForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -266,7 +345,7 @@
     const anio = parseInt(anioLanzamiento.value);
 
     if (!nombre || !generoValor || isNaN(anio)) {
-      alert("Por favor, completa todos los campos correctamente.");
+      mostrarAlerta("⚠️ Por favor completá todos los campos correctamente.");
       return;
     }
 
@@ -276,15 +355,25 @@
       fechaLanzamiento: `${anio}-01-01`
     };
 
-    await fetch(`http://localhost:8080/usuarios/${usuario.id}/favoritos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
+    try {
+      const response = await fetch(`http://localhost:8080/usuarios/${usuario.id}/favoritos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
 
-    favoritoForm.reset();
-    formFlotante.style.display = "none";
-    cargarFavoritos();
+      if (response.ok) {
+        favoritoForm.reset();
+        formFlotante.style.display = "none";
+        mostrarAlerta("✅ Favorito agregado exitosamente!");
+        cargarFavoritos();
+      } else {
+        mostrarAlerta("❌ Error al agregar el favorito.");
+      }
+    } catch (error) {
+      console.error(error);
+      mostrarAlerta("⚠️ No se pudo conectar con el servidor.");
+    }
   });
 
   cargarFavoritos();

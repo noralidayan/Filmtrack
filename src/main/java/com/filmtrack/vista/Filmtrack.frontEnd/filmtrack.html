@@ -123,6 +123,61 @@
       width: 100%;
       bottom: 0;
     }
+
+    /* 🔹 ALERTAS PERSONALIZADAS 🔹 */
+    .custom-alert-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .custom-alert-box {
+      background: #1a1a1a;
+      border: 2px solid #ff69b4;
+      border-radius: 15px;
+      padding: 25px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(255,105,180,0.4);
+      animation: fadeIn 0.25s ease;
+    }
+
+    .custom-alert-box h3 {
+      margin: 0 0 10px;
+      color: #ff69b4;
+      font-size: 22px;
+    }
+
+    .custom-alert-box p {
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .custom-alert-box button {
+      background: #ff69b4;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .custom-alert-box button:hover {
+      background: #ff1493;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -156,7 +211,16 @@
       <small id="emailError"></small>
 
       <label for="clave">Contraseña</label>
-      <input type="password" id="clave" name="clave" placeholder="Contraseña" required>
+      <div class="password-container">
+        <input type="password" id="clave" name="clave" placeholder="Contraseña" required>
+        <button type="button" class="toggle-password" onclick="togglePassword('clave', this)" aria-label="Mostrar u ocultar contraseña">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+               stroke="#ff69b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
       <small id="claveError"></small>
 
       <label for="fechaNacimiento">Fecha de Nacimiento</label>
@@ -167,90 +231,133 @@
     </form>
   </div>
 
+  <!-- 🔹 ALERTA BONITA -->
+  <div class="custom-alert-overlay" id="customAlert">
+    <div class="custom-alert-box">
+      <h3>FilmTrack</h3>
+      <p id="alertMessage"></p>
+      <button onclick="cerrarAlerta()">Aceptar</button>
+    </div>
+  </div>
+
   <footer>
     <p>© 2025 FilmTrack — Hecho con 💜 por Norali</p>
   </footer>
 
   <script>
-  const comenzarBtn = document.getElementById('comenzarBtn');
-  const registroContainer = document.getElementById('registroContainer');
-  const form = document.getElementById('registroForm');
-  const emailError = document.getElementById('emailError');
-  const claveError = document.getElementById('claveError');
-  const fechaError = document.getElementById('fechaError');
+const comenzarBtn = document.getElementById('comenzarBtn');
+const registroContainer = document.getElementById('registroContainer');
+const form = document.getElementById('registroForm');
+const emailError = document.getElementById('emailError');
+const claveError = document.getElementById('claveError');
+const fechaError = document.getElementById('fechaError');
 
-  // Mostrar formulario de registro
-  comenzarBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    registroContainer.style.display = 'block';
-    comenzarBtn.style.display = 'none';
+comenzarBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  registroContainer.style.display = 'block';
+  comenzarBtn.style.display = 'none';
+});
+
+function mostrarAlerta(mensaje, redirigir = false) {
+  const overlay = document.getElementById("customAlert");
+  const msg = document.getElementById("alertMessage");
+  msg.textContent = mensaje;
+  overlay.style.display = "flex";
+
+  // Si redirigir es true, espera 2s y manda al login
+  if (redirigir) {
+    setTimeout(() => {
+      overlay.style.display = "none";
+      window.location.href = "login.html";
+    }, 2000);
+  }
+}
+
+function cerrarAlerta() {
+  document.getElementById("customAlert").style.display = "none";
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  let valido = true;
+
+  const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
+  if (!emailRegex.test(form.email.value)) {
+    emailError.textContent = "Formato de email inválido";
+    valido = false;
+  } else {
+    emailError.textContent = "";
+  }
+
+  if (form.clave.value.length < 5 || form.clave.value.includes(" ")) {
+    claveError.textContent = "Contraseña inválida (mín 5 caracteres, sin espacios)";
+    valido = false;
+  } else {
+    claveError.textContent = "";
+  }
+
+  const fechaRegex = /^\d{2}-\d{2}-\d{4}$/;
+  if (!fechaRegex.test(form.fechaNacimiento.value)) {
+    fechaError.textContent = "Formato de fecha inválido (dd-mm-aaaa)";
+    valido = false;
+  } else {
+    fechaError.textContent = "";
+  }
+
+  ["nombre","usuario","email","clave","fechaNacimiento"].forEach(id => {
+    if (form[id].value.trim() === "") {
+      mostrarAlerta("⚠️ Todos los campos son obligatorios");
+      valido = false;
+    }
   });
 
-  // Validaciones + conexión al backend
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    let valido = true;
+  if (!valido) return;
 
-    const emailRegex = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/;
-    if (!emailRegex.test(form.email.value)) {
-      emailError.textContent = "Formato de email inválido";
-      valido = false;
-    } else {
-      emailError.textContent = "";
-    }
+  const usuario = {
+    nombre: form.nombre.value,
+    nombreUsuario: form.usuario.value,
+    email: form.email.value,
+    clave: form.clave.value,
+    fechaNacimiento: form.fechaNacimiento.value.split("-").reverse().join("-")
+  };
 
-    if (form.clave.value.length < 5 || form.clave.value.includes(" ")) {
-      claveError.textContent = "Contraseña inválida (mín 5 caracteres, sin espacios)";
-      valido = false;
-    } else {
-      claveError.textContent = "";
-    }
-
-    const fechaRegex = /^\d{2}-\d{2}-\d{4}$/;
-    if (!fechaRegex.test(form.fechaNacimiento.value)) {
-      fechaError.textContent = "Formato de fecha inválido (dd-mm-aaaa)";
-      valido = false;
-    } else {
-      fechaError.textContent = "";
-    }
-
-    ["nombre","usuario","email","clave","fechaNacimiento"].forEach(id => {
-      if (form[id].value.trim() === "") {
-        alert("Todos los campos son obligatorios");
-        valido = false;
-      }
+  try {
+    const response = await fetch("http://localhost:8080/usuarios/registrar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(usuario)
     });
 
-    if (!valido) return;
-
-    // 🔹 Si todo está OK, enviar al backend
-    const usuario = {
-      nombre: form.nombre.value,
-      nombreUsuario: form.usuario.value,
-      email: form.email.value,
-      clave: form.clave.value,
-      fechaNacimiento: form.fechaNacimiento.value.split("-").reverse().join("-")
-    };
-
-    try {
-      const response = await fetch("http://localhost:8080/usuarios/registrar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(usuario)
-      });
-
-      if (response.ok) {
-        alert("✅ Usuario registrado con éxito!");
-        form.reset();
-      } else {
-        alert("❌ Error al registrar el usuario.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("⚠️ No se pudo conectar con el servidor.");
+    if (response.ok) {
+      form.reset();
+      registroContainer.style.display = "none"; // oculta el formulario
+      mostrarAlerta("✅ Registro exitoso. Redirigiendo al login...", true);
+    } else {
+      mostrarAlerta("❌ Error al registrar el usuario.");
     }
-  });
-</script>
+  } catch (error) {
+    console.error(error);
+    mostrarAlerta("⚠️ No se pudo conectar con el servidor.");
+  }
+});
 
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
+  const isHidden = input.type === "password";
+  input.type = isHidden ? "text" : "password";
+
+  btn.innerHTML = isHidden
+    ? `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="#ff69b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+         <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.94M9.9 4.24A10.94 10.94 0 0 1 12 4
+         c7 0 11 8 11 8a21.77 21.77 0 0 1-2.93 4.07M1 1l22 22"/>
+       </svg>`
+    : `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+             stroke="#ff69b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+         <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+         <circle cx="12" cy="12" r="3"/>
+       </svg>`;
+}
+</script>
 </body>
 </html>

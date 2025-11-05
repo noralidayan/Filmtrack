@@ -329,3 +329,45 @@ body.login-body {
     font-size: 22px;
   }
 }
+/* ---------- OJITO DENTRO DEL INPUT ---------- */
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  width: 100%;
+  padding: 10px;
+  padding-right: 42px; /* espacio para el icono */
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #fff;
+  color: #000;
+  outline: none;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-password svg {
+  pointer-events: none; /* permite hacer clic sin interferencia */
+  transition: transform 0.2s ease, stroke 0.2s ease;
+}
+
+.toggle-password:hover svg {
+  stroke: #ff1493;
+  transform: scale(1.1);
+}

@@ -5,6 +5,187 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FilmTrack | Iniciar Sesión</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body.login-body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top left, #2a003d, #000);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background: #1a1a1a;
+      padding: 40px;
+      border-radius: 15px;
+      width: 340px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(255,105,180,0.4);
+    }
+
+    .logo {
+      font-size: 32px;
+      color: #ff69b4;
+      margin-bottom: 10px;
+    }
+    .logo span { color: #fff; }
+
+    h2 {
+      color: #ffb6c1;
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .btn {
+      width: 100%;
+      background: #ff69b4;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background: #ff1493;
+    }
+
+    .register-text {
+      margin-top: 15px;
+      color: #f9f6f6;
+    }
+    .register-text a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .register-text a:hover {
+      color: #ff69b4;
+    }
+
+    /* ---------- OJO DENTRO DEL INPUT ---------- */
+    .password-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-container input {
+      width: 100%;
+      padding: 10px;
+      padding-right: 42px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      background-color: #fff;
+      color: #000;
+      outline: none;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      line-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-password svg {
+      pointer-events: none;
+      transition: transform 0.2s ease, stroke 0.2s ease;
+    }
+
+    .toggle-password:hover svg {
+      stroke: #ff1493;
+      transform: scale(1.1);
+    }
+
+    /* ---------- MODAL ALERTA PERSONALIZADA ---------- */
+    .custom-alert-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .custom-alert-box {
+      background: #1a1a1a;
+      border: 2px solid #ff69b4;
+      border-radius: 15px;
+      padding: 25px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(255,105,180,0.4);
+      animation: fadeIn 0.25s ease;
+    }
+
+    .custom-alert-box h3 {
+      margin: 0 0 10px;
+      color: #ff69b4;
+      font-size: 22px;
+    }
+
+    .custom-alert-box p {
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .custom-alert-box button {
+      background: #ff69b4;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .custom-alert-box button:hover {
+      background: #ff1493;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
 </head>
 <body class="login-body">
   <div class="login-container">
@@ -19,7 +200,16 @@
 
       <div class="input-group">
         <label for="password">Contraseña</label>
-        <input type="password" id="password" name="password" placeholder="********" required />
+        <div class="password-container">
+          <input type="password" id="password" name="password" placeholder="********" required />
+          <button type="button" class="toggle-password" onclick="togglePassword('password', this)" aria-label="Mostrar u ocultar contraseña">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="#ff69b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <button type="submit" class="btn">Ingresar</button>
@@ -27,11 +217,32 @@
 
     <p class="register-text">
       ¿No tenés cuenta?
-      <a href="index.html?registro=true" class="btn-primary">Registrate</a>
+      <a href="index.html?registro=true">Registrate</a>
     </p>
   </div>
 
+  <!-- 🔹 MODAL ALERTA BONITO -->
+  <div class="custom-alert-overlay" id="customAlert">
+    <div class="custom-alert-box">
+      <h3>FilmTrack</h3>
+      <p id="alertMessage"></p>
+      <button onclick="cerrarAlerta()">Aceptar</button>
+    </div>
+  </div>
+
   <script>
+    // Mostrar alerta con animación y estética FilmTrack
+    function mostrarAlerta(mensaje) {
+      const overlay = document.getElementById("customAlert");
+      const msg = document.getElementById("alertMessage");
+      msg.textContent = mensaje;
+      overlay.style.display = "flex";
+    }
+
+    function cerrarAlerta() {
+      document.getElementById("customAlert").style.display = "none";
+    }
+
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
@@ -49,20 +260,35 @@
 
         if (response.ok) {
           const usuario = await response.json();
-
-          // ✅ Guardar sesión en localStorage
           localStorage.setItem("usuarioLogueado", JSON.stringify(usuario));
-
-          // ✅ Redirigir al panel de usuario
           window.location.href = "usuario.html";
         } else {
-          alert("❌ Credenciales incorrectas o usuario no encontrado.");
+          mostrarAlerta("❌ Credenciales incorrectas o usuario no encontrado.");
         }
       } catch (error) {
         console.error(error);
-        alert("⚠️ Error al conectar con el servidor.");
+        mostrarAlerta("⚠️ Error al conectar con el servidor.");
       }
     });
+
+    // 👁️ Mostrar/ocultar contraseña
+    function togglePassword(id, btn) {
+      const input = document.getElementById(id);
+      const isHidden = input.type === "password";
+      input.type = isHidden ? "text" : "password";
+
+      btn.innerHTML = isHidden
+        ? `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="#ff69b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.94M9.9 4.24A10.94 10.94 0 0 1 12 4
+             c7 0 11 8 11 8a21.77 21.77 0 0 1-2.93 4.07M1 1l22 22"/>
+           </svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="#ff69b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+             <circle cx="12" cy="12" r="3"/>
+           </svg>`;
+    }
   </script>
 </body>
 </html>

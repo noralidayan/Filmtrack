@@ -158,6 +158,61 @@
     .form-flotante button[type="submit"]:hover {
       background: #ff1493;
     }
+
+    /* 🔹 ALERTAS PERSONALIZADAS 🔹 */
+    .custom-alert-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .custom-alert-box {
+      background: #1a1a1a;
+      border: 2px solid #ff69b4;
+      border-radius: 15px;
+      padding: 25px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(255,105,180,0.4);
+      animation: fadeIn 0.25s ease;
+    }
+
+    .custom-alert-box h3 {
+      margin: 0 0 10px;
+      color: #ff69b4;
+      font-size: 22px;
+    }
+
+    .custom-alert-box p {
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .custom-alert-box button {
+      background: #ff69b4;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .custom-alert-box button:hover {
+      background: #ff1493;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -211,6 +266,15 @@
     </form>
   </div>
 
+  <!-- 🔹 ALERTA BONITA -->
+  <div class="custom-alert-overlay" id="customAlert">
+    <div class="custom-alert-box">
+      <h3>FilmTrack</h3>
+      <p id="alertMessage"></p>
+      <button onclick="cerrarAlerta()">Aceptar</button>
+    </div>
+  </div>
+
   <script>
     const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
     const tablaCuerpo = document.getElementById("tablaCuerpo");
@@ -221,18 +285,27 @@
     const historialForm = document.getElementById("historialForm");
     let historial = [];
 
-    // abrir y cerrar formulario
     btnAbrir.addEventListener("click", () => formFlotante.style.display = "flex");
     btnCerrar.addEventListener("click", () => formFlotante.style.display = "none");
 
-    // cargar historial desde backend
+    // 🔹 funciones de alerta
+    function mostrarAlerta(mensaje) {
+      const overlay = document.getElementById("customAlert");
+      const msg = document.getElementById("alertMessage");
+      msg.textContent = mensaje;
+      overlay.style.display = "flex";
+    }
+
+    function cerrarAlerta() {
+      document.getElementById("customAlert").style.display = "none";
+    }
+
     async function cargarHistorial() {
       const response = await fetch(`http://localhost:8080/usuarios/${usuario.id}/historial`);
       historial = await response.json();
       mostrarHistorial(historial);
     }
 
-    // mostrar historial (corrige nombre del contenido)
     function mostrarHistorial(lista) {
       tablaCuerpo.innerHTML = lista.map(c => `
         <tr>
@@ -243,7 +316,6 @@
       `).join("");
     }
 
-    // filtro por nombre
     buscador.addEventListener("input", (e) => {
       const texto = e.target.value.toLowerCase();
       const filtrados = historial.filter(c => 
@@ -252,15 +324,19 @@
       mostrarHistorial(filtrados);
     });
 
-    // enviar formulario
     historialForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       const body = {
-        nombreContenido: nombreContenido.value,
+        nombreContenido: nombreContenido.value.trim(),
         fechaVisto: fechaVista.value,
         puntuacion: parseInt(puntuacion.value)
       };
+
+      if (!body.nombreContenido || !body.fechaVisto || isNaN(body.puntuacion)) {
+        mostrarAlerta("⚠️ Completá todos los campos correctamente.");
+        return;
+      }
 
       try {
         const response = await fetch(`http://localhost:8080/usuarios/${usuario.id}/historial`, {
@@ -270,15 +346,16 @@
         });
 
         if (response.ok) {
-          alert("✅ Agregado al historial!");
           historialForm.reset();
           formFlotante.style.display = "none";
+          mostrarAlerta("✅ Agregado al historial exitosamente!");
           cargarHistorial();
         } else {
-          alert("❌ Error al agregar al historial.");
+          mostrarAlerta("❌ Error al agregar al historial.");
         }
       } catch (error) {
-        alert("⚠️ No se pudo conectar con el servidor.");
+        console.error(error);
+        mostrarAlerta("⚠️ No se pudo conectar con el servidor.");
       }
     });
 

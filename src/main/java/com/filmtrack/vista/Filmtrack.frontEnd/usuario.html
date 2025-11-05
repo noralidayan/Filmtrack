@@ -23,8 +23,6 @@
       background: #1a1a1a;
       padding: 15px 40px;
       border-bottom: 2px solid #ff69b4;
-      position: relative;
-      z-index: 2;
     }
 
     .navbar h2 {
@@ -63,18 +61,20 @@
       background: #ff69b4;
       border: none;
       color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
+      padding: 12px 25px;
+      border-radius: 10px;
       font-size: 16px;
       cursor: pointer;
-      margin-top: 15px;
+      margin-top: 25px;
       transition: 0.3s;
+      font-weight: bold;
     }
 
     .btn:hover {
       background: #ff1493;
     }
 
+    /* MODAL */
     .modal {
       display: none;
       position: fixed;
@@ -123,6 +123,61 @@
       border-radius: 6px;
       margin-top: 5px;
     }
+
+    /* ALERTAS PERSONALIZADAS */
+    .custom-alert-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .custom-alert-box {
+      background: #1a1a1a;
+      border: 2px solid #ff69b4;
+      border-radius: 15px;
+      padding: 25px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(255,105,180,0.4);
+      animation: fadeIn 0.25s ease;
+    }
+
+    .custom-alert-box h3 {
+      margin: 0 0 10px;
+      color: #ff69b4;
+      font-size: 22px;
+    }
+
+    .custom-alert-box p {
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .custom-alert-box button {
+      background: #ff69b4;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      padding: 10px 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .custom-alert-box button:hover {
+      background: #ff1493;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -132,7 +187,6 @@
     <div class="menu">
       <a href="favoritos.html">⭐ Favoritos</a>
       <a href="historial.html">🕒 Historial</a>
-      <a href="#" id="btnAgregar">➕ Agregar contenido</a>
       <a href="#" id="btnLogout">🚪 Cerrar sesión</a>
     </div>
   </div>
@@ -140,9 +194,10 @@
   <div class="content">
     <h1>Bienvenid@, <span id="usuarioNombre"></span> 👋</h1>
     <p>Seleccioná una opción del menú o agregá contenido a tu lista.</p>
+    <button id="btnAgregar" class="btn">➕ Agregar contenido</button>
   </div>
 
-  <!-- Modal agregar contenido -->
+  <!-- MODAL -->
   <div class="modal" id="modalAgregar">
     <div class="modal-content">
       <span class="close" id="cerrarModal">&times;</span>
@@ -159,30 +214,22 @@
           <option value="historial">Historial visto</option>
         </select>
 
-        <!-- Campos de Favoritos -->
         <div id="camposFavoritos" style="display:none;">
           <label for="genero">Género</label>
-          <select id="genero" required>
+          <select id="genero">
             <option value="">Seleccionar género...</option>
-            <option value="Acción">Acción</option>
-            <option value="Comedia">Comedia</option>
-            <option value="Drama">Drama</option>
-            <option value="Ciencia ficción">Ciencia ficción</option>
-            <option value="Animación">Animación</option>
-            <option value="Romance">Romance</option>
-            <option value="Terror">Terror</option>
-            <option value="Documental">Documental</option>
+            <option>Acción</option><option>Comedia</option><option>Fantasía</option>
+            <option>Drama</option><option>Misterio</option><option>Ciencia ficción</option>
+            <option>Animación</option><option>Romance</option><option>Terror</option>
+            <option>Thriller</option><option>Documental</option>
           </select>
-
           <label for="anioLanzamiento">Año de lanzamiento</label>
           <input type="number" id="anioLanzamiento" min="1900" max="2025">
         </div>
 
-        <!-- Campos de Historial -->
         <div id="camposHistorial" style="display:none;">
-          <label for="fechaVista">Fecha de visualización</label>
+          <label for="fechaVista">Fecha vista</label>
           <input type="date" id="fechaVista">
-
           <label for="puntaje">Puntuación (1 a 5 ⭐)</label>
           <select id="puntaje">
             <option value="">--Seleccionar--</option>
@@ -199,18 +246,19 @@
     </div>
   </div>
 
+  <!-- ALERTA BONITA -->
+  <div class="custom-alert-overlay" id="customAlert">
+    <div class="custom-alert-box">
+      <h3>FilmTrack</h3>
+      <p id="alertMessage"></p>
+      <button onclick="cerrarAlerta()">Aceptar</button>
+    </div>
+  </div>
+
   <script>
     const usuario = JSON.parse(localStorage.getItem("usuarioLogueado"));
-    if (!usuario) {
-      window.location.href = "login.html";
-    } else {
-      document.getElementById("usuarioNombre").textContent = usuario.nombreUsuario || usuario.nombre || "usuario";
-    }
-
-    document.getElementById("btnLogout").addEventListener("click", () => {
-      localStorage.removeItem("usuarioLogueado");
-      window.location.href = "login.html";
-    });
+    if (!usuario) window.location.href = "login.html";
+    else document.getElementById("usuarioNombre").textContent = usuario.nombreUsuario || usuario.nombre || "usuario";
 
     const modal = document.getElementById("modalAgregar");
     const btnAgregar = document.getElementById("btnAgregar");
@@ -219,6 +267,21 @@
     const camposHistorial = document.getElementById("camposHistorial");
     const camposFavoritos = document.getElementById("camposFavoritos");
 
+    document.getElementById("btnLogout").addEventListener("click", () => {
+      localStorage.removeItem("usuarioLogueado");
+      window.location.href = "login.html";
+    });
+
+    // ALERTAS
+    function mostrarAlerta(msg) {
+      document.getElementById("alertMessage").textContent = msg;
+      document.getElementById("customAlert").style.display = "flex";
+    }
+    function cerrarAlerta() {
+      document.getElementById("customAlert").style.display = "none";
+    }
+
+    // Abrir/cerrar modal
     btnAgregar.addEventListener("click", () => modal.style.display = "flex");
     cerrarModal.addEventListener("click", () => modal.style.display = "none");
     window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
@@ -233,7 +296,7 @@
 
       const nombre = document.getElementById("nombreContenido").value.trim();
       const tipo = tipoSelect.value;
-      if (!tipo) return alert("Seleccioná a qué lista agregarlo.");
+      if (!tipo) return mostrarAlerta("⚠️ Seleccioná a qué lista agregarlo.");
 
       let endpoint = "";
       let body = { nombreContenido: nombre };
@@ -242,16 +305,10 @@
         endpoint = `http://localhost:8080/usuarios/${usuario.id}/favoritos`;
         const genero = document.getElementById("genero").value.trim();
         const anio = parseInt(document.getElementById("anioLanzamiento").value) || null;
-
-        if (!genero) {
-          alert("Por favor, seleccioná un género.");
-          return;
-        }
-
+        if (!genero) return mostrarAlerta("⚠️ Seleccioná un género.");
         body.genero = genero;
         body.fechaLanzamiento = anio ? `${anio}-01-01` : null;
-
-      } else if (tipo === "historial") {
+      } else {
         endpoint = `http://localhost:8080/usuarios/${usuario.id}/historial`;
         body.fechaVisto = document.getElementById("fechaVista").value;
         body.puntuacion = parseInt(document.getElementById("puntaje").value) || 0;
@@ -265,16 +322,16 @@
         });
 
         if (response.ok) {
-          alert("✅ Contenido agregado correctamente!");
-          document.getElementById("contenidoForm").reset();
+          mostrarAlerta("✅ Contenido agregado correctamente!");
+          e.target.reset();
           camposFavoritos.style.display = "none";
           camposHistorial.style.display = "none";
           modal.style.display = "none";
         } else {
-          alert("❌ Error al agregar el contenido.");
+          mostrarAlerta("❌ Error al agregar el contenido.");
         }
-      } catch (error) {
-        alert("⚠️ No se pudo conectar con el servidor.");
+      } catch {
+        mostrarAlerta("⚠️ No se pudo conectar con el servidor.");
       }
     });
   </script>
